@@ -1,1 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digi-Loan-Risk-Gini Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
 
+  <!-- Navbar -->
+  <nav class="border-b border-slate-800 bg-slate-950 p-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <h1 class="text-xl font-bold text-indigo-400">🏦 Digi-Loan-Risk-Gini</h1>
+        <span id="roleBadge" class="text-xs bg-slate-800 border border-slate-700 text-slate-300 px-3 py-0.5 rounded-full">Role: Guest</span>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs">
+        <span class="text-slate-400">SSO Portal:</span>
+        <button onclick="loginSSO('underwriter')" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded border border-slate-700">Underwriter SSO</button>
+        <button onclick="loginSSO('admin')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded font-semibold">Admin SSO</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Application Form -->
+    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-xl h-fit">
+      <h2 class="text-lg font-semibold mb-4 text-slate-200">Personal Loan Application</h2>
+      <form id="loanForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-400">Applicant Full Name</label>
+          <input type="text" id="name" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400">Gross Annual Income ($)</label>
+          <input type="number" id="income" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400">CIBIL Score (300 - 900)</label>
+          <input type="number" id="cibilScore" min="300" max="900" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400">Monthly Debts ($)</label>
+          <input type="number" id="monthlyDebts" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-400">Requested Personal Loan ($)</label>
+          <input type="number" id="loanAmount" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none">
+        </div>
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 rounded-lg transition">Evaluate Risk & Save</button>
+      </form>
+    </div>
+
+    <!-- Analytics Dashboard -->
+    <div class="lg:col-span-2 bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-xl">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold text-slate-200">Underwriting Decisions</h2>
+        <button onclick="fetchReports()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded">🔄 Refresh</button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-300">
+          <thead class="bg-slate-900 text-xs uppercase text-slate-400 border-b border-slate-800">
+            <tr>
+              <th class="p-3">ID</th>
+              <th class="p-3">Applicant</th>
+              <th class="p-3">CIBIL</th>
+              <th class="p-3">Score</th>
+              <th class="p-3">Decision</th>
+              <th class="p-3">Admin Action</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody" class="divide-y divide-slate-800"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let currentToken = "";
+    let currentRole = "guest";
+
+    function loginSSO(role) {
+      currentRole = role;
+      document.getElementById("roleBadge").innerText = `Role: ${role.toUpperCase()}`;
+      currentToken = role === 'admin' ? "Bearer ADMIN_MOCK_JWT_TOKEN" : "Bearer USER_MOCK_JWT_TOKEN";
+      fetchReports();
+    }
+
+    document.getElementById("loanForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!currentToken) return alert("Please log in using an SSO Role from top bar!");
+
+      const payload = {
+        name: document.getElementById("name").value,
+        income: parseFloat(document.getElementById("income").value),
+        cibilScore: parseInt(document.getElementById("cibilScore").value),
+        monthlyDebts: parseFloat(document.getElementById("monthlyDebts").value),
+        loanAmount: parseFloat(document.getElementById("loanAmount").value)
+      };
+
+      const res = await fetch("/api/applicant", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": currentToken 
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        document.getElementById("loanForm").reset();
+        fetchReports();
+      } else {
+        alert("Submission failed!");
+      }
+    });
+
+    async function fetchReports() {
+      if (!currentToken) return;
+
+      const res = await fetch("/api/reports", {
+        headers: { "Authorization": currentToken }
+      });
+
+      if (!res.ok) return alert("SSO Token invalid!");
+
+      const data = await res.json();
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+
+      data.forEach(item => {
+        let badge = "bg-green-950 text-green-300 border-green-800";
+        if (item.decision.includes("CONDITIONAL")) badge = "bg-yellow-950 text-yellow-300 border-yellow-800";
+        if (item.decision.includes("REJECTED")) badge = "bg-red-950 text-red-300 border-red-800";
+
+        let rejections = item.rejectionReasons.length ? `<div class="text-[10px] text-red-400 mt-0.5">${item.rejectionReasons.join(", ")}</div>` : '';
+
+        let adminAction = currentRole === 'admin' 
+          ? `<button onclick="overrideDecision(${item.id})" class="text-xs bg-amber-600 hover:bg-amber-500 text-white px-2 py-0.5 rounded">Override</button>` 
+          : `<span class="text-xs text-slate-600">Locked</span>`;
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-900 transition">
+            <td class="p-3 font-mono text-slate-500">#${item.id}</td>
+            <td class="p-3 font-medium text-slate-200">${item.name}</td>
+            <td class="p-3 font-semibold">${item.cibilScore}</td>
+            <td class="p-3 font-bold text-indigo-400">${item.score.toFixed(1)}</td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 text-xs rounded-full border ${badge}">${item.decision}</span>
+              ${rejections}
+            </td>
+            <td class="p-3">${adminAction}</td>
+          </tr>
+        `;
+      });
+    }
+
+    async function overrideDecision(id) {
+      const res = await fetch("/api/admin/override", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": currentToken 
+        },
+        body: JSON.stringify({ id: id, overrideDecision: "MANUALLY APPROVED" })
+      });
+
+      if (res.ok) fetchReports();
+      else alert("Action forbidden for standard user role!");
+    }
+  </script>
+</body>
+</html>
