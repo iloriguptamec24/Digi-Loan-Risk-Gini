@@ -1,1 +1,18 @@
+# Build Outputs
+build/
+bin/
+obj/
+*.out
+*.exe
+*.o
 
+# Database Files
+*.db
+*.sqlite
+data/*.db
+
+# IDE & OS Specific
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
