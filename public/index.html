@@ -5,22 +5,70 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Digi-Loan-Risk-Gini Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+  <style>
+    /* Eye-Comfortable Light Role Themes (Muted Contrast / Anti-Fatigue) */
+    
+    /* 1. Guest Role: Soft Sage & Mint */
+    body.theme-guest { background-color: #f0fdf4; color: #0f172a; }
+    .theme-guest .nav-bg { background-color: #ffffff; border-color: #d1fae5; }
+    .theme-guest .card-bg { background-color: #ffffff; border-color: #a7f3d0; }
+    .theme-guest .accent-text { color: #047857; }
+    .theme-guest .accent-bg { background-color: #059669; }
+    .theme-guest .accent-bg:hover { background-color: #047857; }
+    .theme-guest .input-bg { background-color: #f8fafc; border-color: #cbd5e1; color: #0f172a; }
+    .theme-guest .input-bg:focus { border-color: #059669; }
+    .theme-guest .pill-badge { background-color: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+    .theme-guest .text-muted { color: #475569; }
+    .theme-guest .border-subtle { border-color: #e2e8f0; }
+    .theme-guest .table-header { background-color: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+    .theme-guest .table-row:hover { background-color: #f0fdf4; }
 
-  <!-- Top Navbar with SSO Controls -->
-  <nav class="border-b border-slate-800 bg-slate-950 p-4">
+    /* 2. Underwriter Role: Soft Sky & Cerulean Blue */
+    body.theme-underwriter { background-color: #f0f9ff; color: #0f172a; }
+    .theme-underwriter .nav-bg { background-color: #ffffff; border-color: #bae6fd; }
+    .theme-underwriter .card-bg { background-color: #ffffff; border-color: #7dd3fc; }
+    .theme-underwriter .accent-text { color: #0284c7; }
+    .theme-underwriter .accent-bg { background-color: #0284c7; }
+    .theme-underwriter .accent-bg:hover { background-color: #0369a1; }
+    .theme-underwriter .input-bg { background-color: #f8fafc; border-color: #cbd5e1; color: #0f172a; }
+    .theme-underwriter .input-bg:focus { border-color: #0284c7; }
+    .theme-underwriter .pill-badge { background-color: #e0f2fe; color: #075985; border-color: #38bdf8; }
+    .theme-underwriter .text-muted { color: #475569; }
+    .theme-underwriter .border-subtle { border-color: #e2e8f0; }
+    .theme-underwriter .table-header { background-color: #f0f9ff; color: #075985; border-color: #7dd3fc; }
+    .theme-underwriter .table-row:hover { background-color: #f8fafc; }
+
+    /* 3. Admin Role: Soft Lavender & Amethyst Purple */
+    body.theme-admin { background-color: #faf5ff; color: #0f172a; }
+    .theme-admin .nav-bg { background-color: #ffffff; border-color: #e9d5ff; }
+    .theme-admin .card-bg { background-color: #ffffff; border-color: #d8b4fe; }
+    .theme-admin .accent-text { color: #7e22ce; }
+    .theme-admin .accent-bg { background-color: #9333ea; }
+    .theme-admin .accent-bg:hover { background-color: #7e22ce; }
+    .theme-admin .input-bg { background-color: #f8fafc; border-color: #cbd5e1; color: #0f172a; }
+    .theme-admin .input-bg:focus { border-color: #9333ea; }
+    .theme-admin .pill-badge { background-color: #f3e8ff; color: #6b21a8; border-color: #c084fc; }
+    .theme-admin .text-muted { color: #475569; }
+    .theme-admin .border-subtle { border-color: #e2e8f0; }
+    .theme-admin .table-header { background-color: #faf5ff; color: #6b21a8; border-color: #d8b4fe; }
+    .theme-admin .table-row:hover { background-color: #fdf4ff; }
+  </style>
+</head>
+<body class="theme-guest min-h-screen font-sans transition-colors duration-300">
+
+  <!-- Top Navigation Bar -->
+  <nav class="nav-bg border-b p-4 shadow-sm transition-colors duration-300">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-3">
-        <h1 class="text-xl font-bold text-indigo-400">🏦 Digi-Loan-Risk-Gini</h1>
-        <span id="roleBadge" class="text-xs bg-slate-800 border border-slate-700 text-slate-300 px-3 py-0.5 rounded-full">Role: Guest</span>
+        <h1 class="text-xl font-bold accent-text">🏦 Digi-Loan-Risk-Gini</h1>
+        <span id="roleBadge" class="text-xs pill-badge border px-3 py-0.5 rounded-full font-medium">Role: Guest</span>
       </div>
 
       <div class="flex items-center space-x-2 text-xs">
-        <span class="text-slate-400">SSO Portal:</span>
-        <button onclick="loginSSO('guest')" id="btnGuest" class="bg-indigo-600 text-white px-3 py-1 rounded border border-indigo-500 font-semibold">Guest SSO</button>
-        <button onclick="loginSSO('underwriter')" id="btnUnderwriter" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded border border-slate-700">Underwriter SSO</button>
-        <button onclick="loginSSO('admin')" id="btnAdmin" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded border border-slate-700">Admin SSO</button>
+        <span class="text-muted">SSO Portal:</span>
+        <button onclick="loginSSO('guest')" id="btnGuest" class="px-3 py-1 rounded border font-semibold transition">Guest SSO</button>
+        <button onclick="loginSSO('underwriter')" id="btnUnderwriter" class="px-3 py-1 rounded border font-semibold transition">Underwriter SSO</button>
+        <button onclick="loginSSO('admin')" id="btnAdmin" class="px-3 py-1 rounded border font-semibold transition">Admin SSO</button>
       </div>
     </div>
   </nav>
@@ -28,19 +76,22 @@
   <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
     
     <!-- Application Entry Form -->
-    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-xl h-fit">
-      <h2 id="formTitle" class="text-lg font-semibold mb-4 text-slate-200">Apply for a Loan</h2>
-      <form id="loanForm" class="space-y-4">
+    <div class="card-bg p-6 rounded-xl border shadow-lg h-fit transition-colors duration-300 lg:col-span-1">
+      <h2 id="formTitle" class="text-lg font-semibold mb-4 accent-text">Apply for a Loan</h2>
+      
+      <!-- 2-COLUMN FORM GRID -->
+      <form id="loanForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         
-        <div>
-          <label class="block text-xs font-medium text-slate-400">Applicant Full Name</label>
-          <input type="text" id="name" required placeholder="e.g. Priya Kumar" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+        <!-- Applicant Name -->
+        <div class="sm:col-span-1">
+          <label class="block text-xs font-medium text-muted">Applicant Full Name <span class="text-red-500">*</span></label>
+          <input type="text" id="name" required placeholder="Priya Kumar" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
         </div>
         
         <!-- Loan Type -->
-        <div>
-          <label class="block text-xs font-medium text-slate-400">Select Loan Type</label>
-          <select id="loanType" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+        <div class="sm:col-span-1">
+          <label class="block text-xs font-medium text-muted">Select Loan Type <span class="text-red-500">*</span></label>
+          <select id="loanType" required class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
             <option value="Personal">Personal Loan</option>
             <option value="Education">Education Loan</option>
             <option value="Auto">Auto Loan</option>
@@ -49,100 +100,145 @@
           </select>
         </div>
 
-        <!-- Dynamic Fields Container: Guest Mode Fields vs Underwriter/Admin Field -->
-        <div id="guestFields" class="space-y-4">
+        <!-- Dynamic Guest Fields Container -->
+        <div id="guestFields" class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-medium text-slate-400">PAN Card Number</label>
-            <input type="text" id="pan" placeholder="e.g. ABCDE1234F" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200 uppercase">
+            <label class="block text-xs font-medium text-muted">PAN Card Number <span class="text-red-500">*</span></label>
+            <input type="text" id="pan" required placeholder="AZIDI0001I" pattern="[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}" title="10-character PAN format (e.g. ABCDE1234F)" oninput="this.value = this.value.toUpperCase()" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none uppercase transition">
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-400">Mobile Number</label>
-            <input type="tel" id="mobile" placeholder="e.g. 9876543210" pattern="[0-9]{10}" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+            <label class="block text-xs font-medium text-muted">Mobile Number <span class="text-red-500">*</span></label>
+            <input type="tel" id="mobile" required placeholder="9876543210" pattern="[6-9][0-9]{9}" title="Valid 10-digit Indian mobile number" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-400">Email Address</label>
-            <input type="email" id="email" placeholder="e.g. priya.kumar@example.com" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+            <label class="block text-xs font-medium text-muted">Email Address <span class="text-red-500">*</span></label>
+            <input type="email" id="email" required placeholder="priya.kumar@example.com" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-400">Date of Birth</label>
-            <input type="date" id="dob" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+            <label class="block text-xs font-medium text-muted">Date of Birth <span class="text-red-500">*</span></label>
+            <input type="date" id="dob" required class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
           </div>
         </div>
 
-        <!-- Underwriter / Admin Direct CIBIL Field -->
-        <div id="underwriterFields" class="hidden">
-          <label class="block text-xs font-medium text-slate-400">CIBIL Score (300 - 900)</label>
-          <input type="number" id="cibilScore" min="300" max="900" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+        <!-- Dynamic Underwriter Direct CIBIL Score Field -->
+        <div id="underwriterFields" class="hidden sm:col-span-2">
+          <label class="block text-xs font-medium text-muted">CIBIL Score (300 - 900) <span class="text-red-500">*</span></label>
+          <input type="number" id="cibilScore" min="300" max="900" placeholder="750" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
         </div>
 
-        <div>
-          <label class="block text-xs font-medium text-slate-400">Gross Annual Income ($)</label>
-          <input type="number" id="income" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+        <!-- Financial Parameters -->
+        <div class="sm:col-span-1">
+          <label class="block text-xs font-medium text-muted">Gross Annual Income ($) <span class="text-red-500">*</span></label>
+          <input type="number" id="income" required placeholder="500000" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
         </div>
-        <div>
-          <label class="block text-xs font-medium text-slate-400">Monthly Debts ($)</label>
-          <input type="number" id="monthlyDebts" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+        <div class="sm:col-span-1">
+          <label class="block text-xs font-medium text-muted">Monthly Debts ($) <span class="text-red-500">*</span></label>
+          <input type="number" id="monthlyDebts" required placeholder="15000" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
         </div>
-        <div>
-          <label class="block text-xs font-medium text-slate-400">Requested Loan ($)</label>
-          <input type="number" id="loanAmount" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+
+        <!-- Requested Loan Amount -->
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-medium text-muted">Requested Loan ($) <span class="text-red-500">*</span></label>
+          <input type="number" id="loanAmount" required placeholder="200000" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
         </div>
-        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 rounded-lg transition">Submit Loan Application</button>
+
+        <!-- Consent Checkbox -->
+        <div id="consentContainer" class="sm:col-span-2 pt-2 border-t border-subtle">
+          <label class="flex items-start space-x-2 cursor-pointer text-xs text-muted">
+            <input type="checkbox" id="consentCheckbox" required class="mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
+            <span>I authorize Digi-Loan Gini to process my personal data for credit assessment and underwriting. <span class="text-red-500">*</span></span>
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="sm:col-span-2">
+          <button type="submit" class="accent-bg text-white w-full font-semibold py-2 rounded-lg transition shadow">Submit Application</button>
+        </div>
       </form>
     </div>
 
-    <!-- RIGHT SECTION: Guest Welcome View OR Underwriting Decision Dashboard -->
+    <!-- Right Side Section -->
     <div class="lg:col-span-2">
       
-      <!-- 1. Guest Welcome & Rules View -->
-      <div id="guestWelcomeView" class="bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-xl space-y-6">
-        <div>
-          <h2 class="text-2xl font-bold text-indigo-400">Welcome to Digi-Loan Portal 👋</h2>
-          <p class="text-sm text-slate-400 mt-1">Submit your personal loan application in minutes. Your details will be routed directly to our automated risk engine for processing.</p>
-        </div>
-
-        <div class="border-t border-slate-800 pt-4 space-y-3">
-          <h3 class="text-sm font-semibold text-slate-200 uppercase tracking-wider">📌 Basic Loan Guidelines & Eligibility Rules</h3>
-          
-          <ul class="space-y-2 text-xs text-slate-300 list-disc list-inside">
-            <li><strong class="text-slate-100">Age Qualification:</strong> Applicant must be between 21 and 60 years old.</li>
-            <li><strong class="text-slate-100">CIBIL Requirement:</strong> Minimum credit score of <strong>620+</strong> for secured loans (Home/Auto) and <strong>650+</strong> for Personal Loans.</li>
-            <li><strong class="text-slate-100">Fixed Obligations Ratio (FOIR):</strong> Total monthly debt obligations must not exceed <strong>45% to 55%</strong> of gross monthly income.</li>
-            <li><strong class="text-slate-100">KYC Verification:</strong> Valid PAN and active mobile number linked to Aadhaar are mandatory.</li>
-            <li><strong class="text-slate-100">Processing Time:</strong> Standard applications are evaluated within 24 hours.</li>
-          </ul>
-        </div>
-
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-lg flex items-center justify-between">
+      <!-- Guest View Container -->
+      <div id="guestWelcomeView" class="space-y-6">
+        
+        <!-- 1. Welcome to Digi-Loan Gini Guidelines Box -->
+        <div class="card-bg p-6 rounded-xl border shadow-lg space-y-6 transition-colors duration-300">
           <div>
-            <span class="text-xs text-indigo-400 font-semibold block">Need Internal Access?</span>
-            <span class="text-xs text-slate-400">Switch to Underwriter or Admin SSO in the top bar to inspect live risk evaluations.</span>
+            <h2 class="text-2xl font-bold accent-text">Welcome to Digi-Loan Gini 👋</h2>
+            <p class="text-sm text-muted mt-1">Fill out your application on the left. Once submitted, identity and eligibility checks will validate instantly below.</p>
+          </div>
+
+          <div class="border-t border-subtle pt-4 space-y-3">
+            <h3 class="text-xs font-semibold uppercase tracking-wider accent-text">📌 Underwriting Guidelines & Verification Standard</h3>
+            
+            <ul class="space-y-2 text-xs text-muted list-disc list-inside">
+              <li><strong class="font-semibold text-slate-800">Mandatory Details:</strong> Name, valid 10-character Indian PAN, 10-digit Mobile Number, and DOB are required.</li>
+              <li><strong class="font-semibold text-slate-800">Age Qualification:</strong> Applicant must be at least <strong>21 years old</strong>.</li>
+              <li><strong class="font-semibold text-slate-800">Credit Score Rule:</strong> Minimum <strong>620+</strong> for Home/Auto loans and <strong>650+</strong> for Personal Loans.</li>
+              <li><strong class="font-semibold text-slate-800">FOIR Limit:</strong> Debt obligations must not exceed <strong>45% - 55%</strong> of net income.</li>
+            </ul>
           </div>
         </div>
+
+        <!-- 2. Interactive Validation Status Box (Appears AFTER Welcome Section upon submission) -->
+        <div id="validationStatusCard" class="hidden card-bg p-6 rounded-xl border shadow-lg space-y-4 transition-all">
+          <div class="flex items-center justify-between border-b border-subtle pb-3">
+            <h3 class="text-lg font-bold" id="validationOverallHeader">Submission Status</h3>
+            <span id="validationOverallBadge" class="text-xs px-2.5 py-1 rounded-full font-semibold border">STATUS</span>
+          </div>
+
+          <p class="text-xs text-muted" id="validationSummaryMessage"></p>
+
+          <div class="space-y-2 text-xs">
+            <div class="flex items-center justify-between p-2.5 rounded bg-slate-50 border border-slate-200">
+              <span class="font-medium text-slate-700">Applicant Name</span>
+              <span id="valStatusName" class="font-semibold">Pending</span>
+            </div>
+            <div class="flex items-center justify-between p-2.5 rounded bg-slate-50 border border-slate-200">
+              <span class="font-medium text-slate-700">PAN Card Format</span>
+              <span id="valStatusPan" class="font-semibold">Pending</span>
+            </div>
+            <div class="flex items-center justify-between p-2.5 rounded bg-slate-50 border border-slate-200">
+              <span class="font-medium text-slate-700">Mobile Number Format</span>
+              <span id="valStatusMobile" class="font-semibold">Pending</span>
+            </div>
+            <div class="flex items-center justify-between p-2.5 rounded bg-slate-50 border border-slate-200">
+              <span class="font-medium text-slate-700">Age Verification (DOB ≥ 21 Yrs)</span>
+              <span id="valStatusDob" class="font-semibold">Pending</span>
+            </div>
+            <div class="flex items-center justify-between p-2.5 rounded bg-slate-50 border border-slate-200">
+              <span class="font-medium text-slate-700">Consent Agreement</span>
+              <span id="valStatusConsent" class="font-semibold">Agreed</span>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- 2. Internal Staff Underwriting Dashboard (Hidden for Guests) -->
-      <div id="underwriterDashboard" class="hidden bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-xl">
+      <!-- Staff Dashboard View (Hidden for Guest) -->
+      <div id="underwriterDashboard" class="hidden card-bg p-6 rounded-xl border shadow-lg transition-colors duration-300">
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-lg font-semibold text-slate-200">Underwriting Decisions Table</h2>
-          <button onclick="fetchReports()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded">🔄 Refresh</button>
+          <h2 class="text-lg font-semibold accent-text">Underwriting Decision Matrix</h2>
+          <button onclick="fetchReports()" class="text-xs nav-bg hover:opacity-80 px-3 py-1 rounded border shadow-sm">🔄 Refresh Data</button>
         </div>
 
         <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm text-slate-300">
-            <thead class="bg-slate-900 text-xs uppercase text-slate-400 border-b border-slate-800">
+          <table class="w-full text-left text-sm text-slate-700">
+            <thead class="table-header text-xs uppercase border-b">
               <tr>
                 <th class="p-3">ID</th>
                 <th class="p-3">Applicant</th>
                 <th class="p-3">Type</th>
                 <th class="p-3">CIBIL</th>
                 <th class="p-3">Risk Factor</th>
-                <th class="p-3">Adj Score</th>
+                <th class="p-3">Score</th>
                 <th class="p-3">Decision</th>
-                <th class="p-3">Admin Action</th>
+                <th class="p-3">Action</th>
               </tr>
             </thead>
-            <tbody id="tableBody" class="divide-y divide-slate-800"></tbody>
+            <tbody id="tableBody" class="divide-y divide-slate-200"></tbody>
           </table>
         </div>
       </div>
@@ -155,35 +251,45 @@
     let currentRole = "guest";
 
     document.addEventListener("DOMContentLoaded", () => {
-      loginSSO('guest'); // Default screen on startup
+      loginSSO('guest');
     });
 
     function loginSSO(role) {
       currentRole = role;
+      document.body.className = `theme-${role} min-h-screen font-sans transition-colors duration-300`;
       document.getElementById("roleBadge").innerText = `Role: ${role.toUpperCase()}`;
 
-      // Reset SSO button styling
-      ['btnGuest', 'btnUnderwriter', 'btnAdmin'].forEach(id => {
-        const btn = document.getElementById(id);
-        btn.className = "bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded border border-slate-700";
+      const guestInputIds = ['pan', 'mobile', 'email', 'dob', 'consentCheckbox'];
+      const cibilInput = document.getElementById('cibilScore');
+
+      ['guest', 'underwriter', 'admin'].forEach(r => {
+        const btn = document.getElementById(`btn${r.charAt(0).toUpperCase() + r.slice(1)}`);
+        if (r === role) {
+          btn.className = "accent-bg text-white px-3 py-1 rounded border-transparent font-semibold shadow";
+        } else {
+          btn.className = "nav-bg hover:opacity-80 px-3 py-1 rounded border border-slate-300 text-slate-600";
+        }
       });
 
       if (role === 'guest') {
-        document.getElementById("btnGuest").className = "bg-indigo-600 text-white px-3 py-1 rounded border border-indigo-500 font-semibold";
         currentToken = "Bearer USER_MOCK_JWT_TOKEN";
         
-        // Show Guest UI, hide Underwriter/Admin dashboard
+        guestInputIds.forEach(id => document.getElementById(id).setAttribute('required', 'true'));
+        cibilInput.removeAttribute('required');
+
         document.getElementById("guestFields").classList.remove("hidden");
+        document.getElementById("consentContainer").classList.remove("hidden");
         document.getElementById("underwriterFields").classList.add("hidden");
         document.getElementById("guestWelcomeView").classList.remove("hidden");
         document.getElementById("underwriterDashboard").classList.add("hidden");
       } else {
-        const activeBtn = role === 'admin' ? "btnAdmin" : "btnUnderwriter";
-        document.getElementById(activeBtn).className = "bg-indigo-600 text-white px-3 py-1 rounded border border-indigo-500 font-semibold";
         currentToken = role === 'admin' ? "Bearer ADMIN_MOCK_JWT_TOKEN" : "Bearer USER_MOCK_JWT_TOKEN";
         
-        // Show Underwriter/Admin UI
+        guestInputIds.forEach(id => document.getElementById(id).removeAttribute('required'));
+        cibilInput.setAttribute('required', 'true');
+
         document.getElementById("guestFields").classList.add("hidden");
+        document.getElementById("consentContainer").classList.add("hidden");
         document.getElementById("underwriterFields").classList.remove("hidden");
         document.getElementById("guestWelcomeView").classList.add("hidden");
         document.getElementById("underwriterDashboard").classList.remove("hidden");
@@ -192,10 +298,78 @@
       }
     }
 
+    function calculateAge(dobString) {
+      if (!dobString) return 0;
+      const birthDate = new Date(dobString);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+      return age;
+    }
+
     document.getElementById("loanForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      let scoreVal = 700; // Default simulated score for guest submissions
+      if (currentRole === 'guest') {
+        const nameVal = document.getElementById("name").value.trim();
+        const panVal = document.getElementById("pan").value.trim();
+        const mobileVal = document.getElementById("mobile").value.trim();
+        const dobVal = document.getElementById("dob").value;
+        const consentVal = document.getElementById("consentCheckbox").checked;
+
+        const isNameValid = nameVal.length >= 2;
+        const isPanValid = /^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$/.test(panVal);
+        const isMobileValid = /^[6-9][0-9]{9}$/.test(mobileVal);
+        const age = calculateAge(dobVal);
+        const isDobValid = age >= 21;
+
+        const allValid = isNameValid && isPanValid && isMobileValid && isDobValid && consentVal;
+
+        const statusCard = document.getElementById("validationStatusCard");
+        statusCard.classList.remove("hidden");
+
+        document.getElementById("valStatusName").innerHTML = isNameValid 
+          ? `<span class="text-emerald-700 font-bold">✓ Validated</span>` 
+          : `<span class="text-rose-600 font-bold">✗ Invalid Name</span>`;
+
+        document.getElementById("valStatusPan").innerHTML = isPanValid 
+          ? `<span class="text-emerald-700 font-bold">✓ Validated (${panVal})</span>` 
+          : `<span class="text-rose-600 font-bold">✗ Invalid Format</span>`;
+
+        document.getElementById("valStatusMobile").innerHTML = isMobileValid 
+          ? `<span class="text-emerald-700 font-bold">✓ Validated (${mobileVal})</span>` 
+          : `<span class="text-rose-600 font-bold">✗ Invalid Number</span>`;
+
+        document.getElementById("valStatusDob").innerHTML = isDobValid 
+          ? `<span class="text-emerald-700 font-bold">✓ Validated (${age} Yrs)</span>` 
+          : `<span class="text-rose-600 font-bold">✗ Underage (${age} Yrs)</span>`;
+
+        document.getElementById("valStatusConsent").innerHTML = consentVal 
+          ? `<span class="text-emerald-700 font-bold">✓ Agreed</span>` 
+          : `<span class="text-rose-600 font-bold">✗ Consent Required</span>`;
+
+        const overallHeader = document.getElementById("validationOverallHeader");
+        const overallBadge = document.getElementById("validationOverallBadge");
+        const overallSummary = document.getElementById("validationSummaryMessage");
+
+        if (allValid) {
+          overallHeader.innerText = "Application Validation Successful!";
+          overallHeader.className = "text-lg font-bold text-emerald-800";
+          overallBadge.innerText = "SUCCESS";
+          overallBadge.className = "text-xs px-2.5 py-1 rounded-full font-semibold border bg-emerald-100 text-emerald-800 border-emerald-300";
+          overallSummary.innerText = "Applicant Full Name, PAN Card Number, Mobile Number, and Date of Birth have been validated successfully.";
+        } else {
+          overallHeader.innerText = "Validation Check Failed!";
+          overallHeader.className = "text-lg font-bold text-rose-700";
+          overallBadge.innerText = "ACTION REQUIRED";
+          overallBadge.className = "text-xs px-2.5 py-1 rounded-full font-semibold border bg-rose-100 text-rose-800 border-rose-300";
+          overallSummary.innerText = "One or more mandatory identity checks failed. Please correct the highlighted fields on the left.";
+          return;
+        }
+      }
+
+      let scoreVal = 700;
       if (currentRole !== 'guest') {
         scoreVal = parseInt(document.getElementById("cibilScore").value) || 700;
       }
@@ -220,13 +394,9 @@
 
       if (res.ok) {
         document.getElementById("loanForm").reset();
-        if (currentRole === 'guest') {
-          alert("Application submitted successfully! Our team will review your application.");
-        } else {
-          fetchReports();
-        }
+        if (currentRole !== 'guest') fetchReports();
       } else {
-        alert("Failed to submit applicant.");
+        alert("Failed to save application to server.");
       }
     });
 
@@ -237,31 +407,31 @@
         headers: { "Authorization": currentToken }
       });
 
-      if (!res.ok) return alert("SSO Token invalid!");
+      if (!res.ok) return alert("SSO Session invalid!");
 
       const data = await res.json();
       const tbody = document.getElementById("tableBody");
       tbody.innerHTML = "";
 
       data.forEach(item => {
-        let badge = "bg-green-950 text-green-300 border-green-800";
-        if (item.decision.includes("CONDITIONAL")) badge = "bg-yellow-950 text-yellow-300 border-yellow-800";
-        if (item.decision.includes("REJECTED")) badge = "bg-red-950 text-red-300 border-red-800";
+        let badge = "bg-emerald-100 text-emerald-800 border-emerald-300";
+        if (item.decision.includes("CONDITIONAL")) badge = "bg-amber-100 text-amber-800 border-amber-300";
+        if (item.decision.includes("REJECTED")) badge = "bg-rose-100 text-rose-800 border-rose-300";
 
-        let rejections = item.rejectionReasons.length ? `<div class="text-[10px] text-red-400 mt-0.5">${item.rejectionReasons.join(", ")}</div>` : '';
+        let rejections = item.rejectionReasons.length ? `<div class="text-[10px] text-rose-600 mt-0.5">${item.rejectionReasons.join(", ")}</div>` : '';
 
         let adminAction = currentRole === 'admin' 
-          ? `<button onclick="overrideDecision(${item.id})" class="text-xs bg-amber-600 hover:bg-amber-500 text-white px-2 py-0.5 rounded">Override</button>` 
-          : `<span class="text-xs text-slate-600">Locked</span>`;
+          ? `<button onclick="overrideDecision(${item.id})" class="text-xs bg-purple-700 hover:bg-purple-600 text-white px-2 py-0.5 rounded shadow">Override</button>` 
+          : `<span class="text-xs text-slate-400">Read-Only</span>`;
 
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-900 transition">
+          <tr class="table-row transition">
             <td class="p-3 font-mono text-slate-500">#${item.id}</td>
-            <td class="p-3 font-medium text-slate-200">${item.name}</td>
-            <td class="p-3"><span class="text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-indigo-300">${item.loanType}</span></td>
-            <td class="p-3 font-semibold">${item.cibilScore}</td>
-            <td class="p-3 font-mono text-amber-400">${item.bankRiskFactor.toFixed(2)}x</td>
-            <td class="p-3 font-bold text-indigo-400">${item.score.toFixed(1)}</td>
+            <td class="p-3 font-medium text-slate-800">${item.name}</td>
+            <td class="p-3"><span class="text-xs pill-badge border px-2 py-0.5 rounded font-medium">${item.loanType}</span></td>
+            <td class="p-3 font-semibold text-slate-700">${item.cibilScore}</td>
+            <td class="p-3 font-mono text-amber-700 font-semibold">${item.bankRiskFactor.toFixed(2)}x</td>
+            <td class="p-3 font-bold accent-text">${item.score.toFixed(1)}</td>
             <td class="p-3">
               <span class="px-2 py-0.5 text-xs rounded-full border ${badge}">${item.decision}</span>
               ${rejections}
