@@ -33,7 +33,7 @@ asynchronous I/O and HTTP networking.
 
 ## 🏗️ 2. Build & Compilation Instructions
 #### 🚀 Standard Build Procedure
-Run CMake to generate build configuration files, followed by cmake --build to compile the C++ source code:
+    Run CMake to generate build configuration files, followed by cmake --build to compile the C++ source code:
 * **Bash**
 * Create and navigate into the build directory : **mkdir -p build && cd build**
 * Generate build configuration : **cmake ..**
@@ -41,6 +41,12 @@ Run CMake to generate build configuration files, followed by cmake --build to co
     **cmake --build .**
 * Go to main dir : **cd ..**
 * Run Application : **./build/DigiLoanServer**
+
+    ###### Once launched, the console will confirm server startup:
+    ###### =======================================================
+    ###### 🚀 DIGI-LOAN-RISK-GINI RUNNING AT http://localhost:18080
+    ###### =======================================================
+    ###### Open your web browser and navigate
 
 #### 🚀 Clean Rebuild
 ```bash
