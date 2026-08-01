@@ -17,83 +17,89 @@ cmake ..
 
 # 3. Compile the source code
 cmake --build .
-Q2: How do I perform a clean rebuild?
-If you modified CMakeLists.txt, added new dependencies, or updated static assets in public/index.html, perform a clean build:
 
-Bash
-# Remove build artifacts and recompile
-rm -rf build/
-mkdir build && cd build
-cmake ..
-cmake --build .
-Q3: Why do I need to rebuild if I only modified public/index.html?
+# 4. How do I perform a clean rebuild?
+Remove build artifacts and recompile <br>
+If you modified CMakeLists.txt, added new dependencies, or updated static assets in public/index.html, perform a clean build: <br>
+Bash <br>
+rm -rf build/ <br>
+mkdir build && cd build <br>
+cmake .. <br>
+cmake --build . <br>
+
+# 5. Why do I need to rebuild if I only modified public/index.html? <br>
 The CMakeLists.txt file uses file(COPY ...) to transfer static frontend assets from public/ into the output executable folder (build/public). Running cmake --build build copies the latest version of index.html into the target location so Crow can serve it.
 
-🚀 Running the Application
-Q4: How do I run the application executable?
-Always execute the binary from the project root directory (where public/ and src/ are located) to ensure proper relative path resolution for static assets and database files:
+# 6. 🚀 Running the Application
+How do I run the application executable?<br>
+Always execute the binary from the project root directory (where public/ and src/ are located) to ensure proper relative path resolution for static assets and database files: <br>
+Run from the root directory: <br>
+Bash<br>
+./build/DigiLoanServer<br>
 
-Bash
-# Run from the root directory:
-./build/DigiLoanServer
-Q5: Is there a single-line command to compile and run directly?
-Yes, run this command from the project root directory:
+# 7. Is there a single-line command to compile and run directly?
+Yes, run this command from the project root directory:<br>
 
-Bash
-cmake --build build && ./build/DigiLoanServer
-Q6: Where can I access the Web UI?
-Once the server output prints 🚀 DIGI-LOAN-RISK-GINI RUNNING AT http://localhost:18080, open your web browser and navigate to:
+Bash<br>
+cmake --build build && ./build/DigiLoanServer<br>
 
-Local Machine: http://localhost:18080
+# 8. Where can I access the Web UI?
+Once the server output prints 🚀 DIGI-LOAN-RISK-GINI RUNNING AT http://localhost:18080, open your web browser and navigate to:<br>
 
-GitHub Codespaces: Open the Ports tab in VS Code / Codespaces and open Port 18080 in your browser.
+Local Machine: http://localhost:18080<br>
 
-🔌 Port Management & Process Termination
-Q7: What do I do if port 18080 is already in use?
-If you see an error like bind: Address already in use or Failed to listen on port 18080, an instance of DigiLoanServer (or another process) is running in the background.
+GitHub Codespaces: Open the Ports tab in VS Code / Codespaces and open Port 18080 in your browser.<br>
 
-Step 1: Identify the Process ID (PID)
-Bash
-lsof -i :18080
-# OR
-netstat -nlp | grep 18080
-Step 2: Kill the Process
-Bash
-# Kill process using PID (replace <PID> with the actual process number)
-kill -9 <PID>
+# 9. 🔌 Port Management & Process Termination
+What do I do if port 18080 is already in use?<br>
+If you see an error like bind: Address already in use or Failed to listen on port 18080, an instance of DigiLoanServer (or another <br>process) is running in the background.<br>
 
-# OR Kill the process directly by port number in one step:
-fuser -k 18080/tcp
-Step 3: Kill by Process Name
-Bash
-killall DigiLoanServer
-🐛 Troubleshooting Common Errors
-Q8: bash: ./build/DigiLoanServer: No such file or directory
-Cause: You ran cmake .. to configure the project, but have not yet compiled the executable file.
-Solution: Run the build step before executing:
+Step 1: Identify the Process ID (PID)<br>
+Bash<br>
+lsof -i :18080<br>
+OR<br>
+netstat -nlp | grep 18080<br>
+Step 2: Kill the Process<br>
+Bash<br>
+Kill process using PID (replace <PID> with the actual process number)<br>
+kill -9 <PID><br>
 
-Bash
-cd build && cmake --build . && cd ..
-./build/DigiLoanServer
-Q9: CMake Error: Could NOT find asio (missing: ASIO_INCLUDE_DIR)
-Cause: Crow requires the standalone Asio header library for asynchronous networking.
-Solution: Install the developer headers on Debian/Ubuntu/Codespaces:
+OR Kill the process directly by port number in one step:<br>
+fuser -k 18080/tcp<br>
+Step 3: Kill by Process Name<br>
+Bash<br>
+killall DigiLoanServer<br>
 
-Bash
-sudo apt-get update && sudo apt-get install -y libasio-dev
-Q10: error: operands to '?:' have different types 'crow::json::detail::r_string' and 'const char [N]'
-Cause: Implicit type conversion failure between Crow's custom JSON string wrapper and a C-style string literal.
-Solution: Explicitly cast Crow string values to std::string:
+🐛 Troubleshooting Common Errors<br>
+# 8. bash: ./build/DigiLoanServer: No such file or directory
+Cause: You ran cmake .. to configure the project, but have not yet compiled the executable file.<br>
+Solution: Run the build step before executing:<br>
 
-C++
-std::string loanType = "Personal";
-if (body.has("loanType")) {
-    loanType = std::string(body["loanType"].s());
-}
-Q11: Where is the SQLite database stored?
-The application programmatically creates a data/ directory at the project root and stores the SQLite database in data/digi_loan_risk.db.
+Bash<br>
+cd build && cmake --build . && cd ..<br>
+./build/DigiLoanServer<br>
 
-To reset or clear all application data, stop the server and delete the database file:
+# 9. CMake Error: Could NOT find asio (missing: ASIO_INCLUDE_DIR)
+Cause: Crow requires the standalone Asio header library for asynchronous networking.<br>
+Solution: Install the developer headers on Debian/Ubuntu/Codespaces:<br>
 
-Bash
-rm -rf data/digi_loan_risk.db
+Bash<br>
+sudo apt-get update && sudo apt-get install -y libasio-dev<br>
+
+# 10.  error: operands to '?:' have different types 'crow::json::detail::r_string' and 'const char [N]'
+Cause: Implicit type conversion failure between Crow's custom JSON string wrapper and a C-style string literal.<br>
+Solution: Explicitly cast Crow string values to std::string:<br>
+
+C++<br>
+std::string loanType = "Personal";<br>
+if (body.has("loanType")) {<br>
+    loanType = std::string(body["loanType"].s());<br>
+}<br>
+
+# 11. Where is the SQLite database stored?
+The application programmatically creates a data/ directory at the project root and stores the SQLite database in data/digi_loan_risk.db.<br>
+
+To reset or clear all application data, stop the server and delete the database file:<br>
+
+Bash<br>
+rm -rf data/digi_loan_risk.db<br>
