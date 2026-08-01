@@ -34,7 +34,8 @@ asynchronous I/O and HTTP networking.
 ## 🏗️ 2. Build & Compilation Instructions
 #### 🚀 Standard Build Procedure
     Run CMake to generate build configuration files, followed by cmake --build to compile the C++ source code:
-* **Bash**
+* **Bash** <br>
+* **rm -rf build/**
 * Create and navigate into the build directory : **mkdir -p build && cd build**
 * Generate build configuration : **cmake ..**
 * Compile source code into the binary executable
@@ -55,7 +56,7 @@ asynchronous I/O and HTTP networking.
 If you modified CMakeLists.txt, updated static assets in public/index.html, or want a fresh start, perform a clean rebuild:
     Bash
     Remove build cache and recompile
-       -rf build/
+        rm -rf build/
         cmake -B build
         cmake --build build
 

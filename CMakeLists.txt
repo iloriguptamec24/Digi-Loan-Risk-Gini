@@ -55,3 +55,16 @@ target_link_libraries(DigiLoanServer PRIVATE
 # ==============================================================================
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/public/
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public)
+
+
+# ==============================================================================
+# INDEPENDENT CIBIL UNIT TEST EXECUTABLE
+# ==============================================================================
+add_executable(TestCIBIL 
+    tests/test_cibil.cpp
+    src/cibil_score.cpp
+)
+
+target_link_libraries(TestCIBIL PRIVATE
+    ${CURL_LIBRARIES}
+)
