@@ -46,7 +46,9 @@ asynchronous I/O and HTTP networking.
     ###### =======================================================
     ###### 🚀 DIGI-LOAN-RISK-GINI RUNNING AT http://localhost:18080
     ###### =======================================================
-    ###### Open your web browser and navigate
+    ###### Open your web browser and navigate (like )
+    https://expert-goggles-xrrpwvwxwj9rc5rj-18080.app.github.dev/ <br>
+    http://localhost:18080 <br>
 
 #### 🚀 Clean Rebuild
 ```bash
