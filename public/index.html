@@ -18,23 +18,26 @@
 
       <div class="flex items-center space-x-2 text-xs">
         <span class="text-slate-400">SSO Portal:</span>
-        <button onclick="loginSSO('underwriter')" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded border border-slate-700">Underwriter SSO</button>
-        <button onclick="loginSSO('admin')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded font-semibold">Admin SSO</button>
+        <button onclick="loginSSO('guest')" id="btnGuest" class="bg-indigo-600 text-white px-3 py-1 rounded border border-indigo-500 font-semibold">Guest SSO</button>
+        <button onclick="loginSSO('underwriter')" id="btnUnderwriter" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded border border-slate-700">Underwriter SSO</button>
+        <button onclick="loginSSO('admin')" id="btnAdmin" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded border border-slate-700">Admin SSO</button>
       </div>
     </div>
   </nav>
 
   <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
     <!-- Application Entry Form -->
     <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-xl h-fit">
-      <h2 class="text-lg font-semibold mb-4 text-slate-200">New Underwriting Application</h2>
+      <h2 id="formTitle" class="text-lg font-semibold mb-4 text-slate-200">Apply for a Loan</h2>
       <form id="loanForm" class="space-y-4">
+        
         <div>
           <label class="block text-xs font-medium text-slate-400">Applicant Full Name</label>
-          <input type="text" id="name" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+          <input type="text" id="name" required placeholder="e.g. Priya Kumar" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
         </div>
         
-        <!-- Loan Type Selection -->
+        <!-- Loan Type -->
         <div>
           <label class="block text-xs font-medium text-slate-400">Select Loan Type</label>
           <select id="loanType" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
@@ -46,13 +49,35 @@
           </select>
         </div>
 
+        <!-- Dynamic Fields Container: Guest Mode Fields vs Underwriter/Admin Field -->
+        <div id="guestFields" class="space-y-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-400">PAN Card Number</label>
+            <input type="text" id="pan" placeholder="e.g. ABCDE1234F" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200 uppercase">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400">Mobile Number</label>
+            <input type="tel" id="mobile" placeholder="e.g. 9876543210" pattern="[0-9]{10}" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400">Email Address</label>
+            <input type="email" id="email" placeholder="e.g. priya.kumar@example.com" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400">Date of Birth</label>
+            <input type="date" id="dob" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+          </div>
+        </div>
+
+        <!-- Underwriter / Admin Direct CIBIL Field -->
+        <div id="underwriterFields" class="hidden">
+          <label class="block text-xs font-medium text-slate-400">CIBIL Score (300 - 900)</label>
+          <input type="number" id="cibilScore" min="300" max="900" class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+        </div>
+
         <div>
           <label class="block text-xs font-medium text-slate-400">Gross Annual Income ($)</label>
           <input type="number" id="income" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-slate-400">CIBIL Score (300 - 900)</label>
-          <input type="number" id="cibilScore" min="300" max="900" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
         </div>
         <div>
           <label class="block text-xs font-medium text-slate-400">Monthly Debts ($)</label>
@@ -62,34 +87,66 @@
           <label class="block text-xs font-medium text-slate-400">Requested Loan ($)</label>
           <input type="number" id="loanAmount" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
         </div>
-        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 rounded-lg transition">Evaluate Risk & Save</button>
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 rounded-lg transition">Submit Loan Application</button>
       </form>
     </div>
 
-    <!-- Data Dashboard Table -->
-    <div class="lg:col-span-2 bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-xl">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold text-slate-200">Underwriting Decisions</h2>
-        <button onclick="fetchReports()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded">🔄 Refresh</button>
+    <!-- RIGHT SECTION: Guest Welcome View OR Underwriting Decision Dashboard -->
+    <div class="lg:col-span-2">
+      
+      <!-- 1. Guest Welcome & Rules View -->
+      <div id="guestWelcomeView" class="bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-xl space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold text-indigo-400">Welcome to Digi-Loan Portal 👋</h2>
+          <p class="text-sm text-slate-400 mt-1">Submit your personal loan application in minutes. Your details will be routed directly to our automated risk engine for processing.</p>
+        </div>
+
+        <div class="border-t border-slate-800 pt-4 space-y-3">
+          <h3 class="text-sm font-semibold text-slate-200 uppercase tracking-wider">📌 Basic Loan Guidelines & Eligibility Rules</h3>
+          
+          <ul class="space-y-2 text-xs text-slate-300 list-disc list-inside">
+            <li><strong class="text-slate-100">Age Qualification:</strong> Applicant must be between 21 and 60 years old.</li>
+            <li><strong class="text-slate-100">CIBIL Requirement:</strong> Minimum credit score of <strong>620+</strong> for secured loans (Home/Auto) and <strong>650+</strong> for Personal Loans.</li>
+            <li><strong class="text-slate-100">Fixed Obligations Ratio (FOIR):</strong> Total monthly debt obligations must not exceed <strong>45% to 55%</strong> of gross monthly income.</li>
+            <li><strong class="text-slate-100">KYC Verification:</strong> Valid PAN and active mobile number linked to Aadhaar are mandatory.</li>
+            <li><strong class="text-slate-100">Processing Time:</strong> Standard applications are evaluated within 24 hours.</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-lg flex items-center justify-between">
+          <div>
+            <span class="text-xs text-indigo-400 font-semibold block">Need Internal Access?</span>
+            <span class="text-xs text-slate-400">Switch to Underwriter or Admin SSO in the top bar to inspect live risk evaluations.</span>
+          </div>
+        </div>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm text-slate-300">
-          <thead class="bg-slate-900 text-xs uppercase text-slate-400 border-b border-slate-800">
-            <tr>
-              <th class="p-3">ID</th>
-              <th class="p-3">Applicant</th>
-              <th class="p-3">Type</th>
-              <th class="p-3">CIBIL</th>
-              <th class="p-3">Risk Factor</th>
-              <th class="p-3">Adj Score</th>
-              <th class="p-3">Decision</th>
-              <th class="p-3">Admin Action</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody" class="divide-y divide-slate-800"></tbody>
-        </table>
+      <!-- 2. Internal Staff Underwriting Dashboard (Hidden for Guests) -->
+      <div id="underwriterDashboard" class="hidden bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-xl">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold text-slate-200">Underwriting Decisions Table</h2>
+          <button onclick="fetchReports()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded">🔄 Refresh</button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-300">
+            <thead class="bg-slate-900 text-xs uppercase text-slate-400 border-b border-slate-800">
+              <tr>
+                <th class="p-3">ID</th>
+                <th class="p-3">Applicant</th>
+                <th class="p-3">Type</th>
+                <th class="p-3">CIBIL</th>
+                <th class="p-3">Risk Factor</th>
+                <th class="p-3">Adj Score</th>
+                <th class="p-3">Decision</th>
+                <th class="p-3">Admin Action</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody" class="divide-y divide-slate-800"></tbody>
+          </table>
+        </div>
       </div>
+
     </div>
   </main>
 
@@ -97,27 +154,57 @@
     let currentToken = "";
     let currentRole = "guest";
 
-    // Auto-login as Underwriter on initial page load
     document.addEventListener("DOMContentLoaded", () => {
-      loginSSO('underwriter');
+      loginSSO('guest'); // Default screen on startup
     });
 
     function loginSSO(role) {
       currentRole = role;
       document.getElementById("roleBadge").innerText = `Role: ${role.toUpperCase()}`;
-      currentToken = role === 'admin' ? "Bearer ADMIN_MOCK_JWT_TOKEN" : "Bearer USER_MOCK_JWT_TOKEN";
-      fetchReports();
+
+      // Reset SSO button styling
+      ['btnGuest', 'btnUnderwriter', 'btnAdmin'].forEach(id => {
+        const btn = document.getElementById(id);
+        btn.className = "bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded border border-slate-700";
+      });
+
+      if (role === 'guest') {
+        document.getElementById("btnGuest").className = "bg-indigo-600 text-white px-3 py-1 rounded border border-indigo-500 font-semibold";
+        currentToken = "Bearer USER_MOCK_JWT_TOKEN";
+        
+        // Show Guest UI, hide Underwriter/Admin dashboard
+        document.getElementById("guestFields").classList.remove("hidden");
+        document.getElementById("underwriterFields").classList.add("hidden");
+        document.getElementById("guestWelcomeView").classList.remove("hidden");
+        document.getElementById("underwriterDashboard").classList.add("hidden");
+      } else {
+        const activeBtn = role === 'admin' ? "btnAdmin" : "btnUnderwriter";
+        document.getElementById(activeBtn).className = "bg-indigo-600 text-white px-3 py-1 rounded border border-indigo-500 font-semibold";
+        currentToken = role === 'admin' ? "Bearer ADMIN_MOCK_JWT_TOKEN" : "Bearer USER_MOCK_JWT_TOKEN";
+        
+        // Show Underwriter/Admin UI
+        document.getElementById("guestFields").classList.add("hidden");
+        document.getElementById("underwriterFields").classList.remove("hidden");
+        document.getElementById("guestWelcomeView").classList.add("hidden");
+        document.getElementById("underwriterDashboard").classList.remove("hidden");
+        
+        fetchReports();
+      }
     }
 
     document.getElementById("loanForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (!currentToken) return alert("Please select an SSO role from top navbar first!");
+
+      let scoreVal = 700; // Default simulated score for guest submissions
+      if (currentRole !== 'guest') {
+        scoreVal = parseInt(document.getElementById("cibilScore").value) || 700;
+      }
 
       const payload = {
         name: document.getElementById("name").value,
         loanType: document.getElementById("loanType").value,
+        cibilScore: scoreVal,
         income: parseFloat(document.getElementById("income").value),
-        cibilScore: parseInt(document.getElementById("cibilScore").value),
         monthlyDebts: parseFloat(document.getElementById("monthlyDebts").value),
         loanAmount: parseFloat(document.getElementById("loanAmount").value)
       };
@@ -133,20 +220,24 @@
 
       if (res.ok) {
         document.getElementById("loanForm").reset();
-        fetchReports();
+        if (currentRole === 'guest') {
+          alert("Application submitted successfully! Our team will review your application.");
+        } else {
+          fetchReports();
+        }
       } else {
         alert("Failed to submit applicant.");
       }
     });
 
     async function fetchReports() {
-      if (!currentToken) return;
+      if (currentRole === 'guest') return;
 
       const res = await fetch("/api/reports", {
         headers: { "Authorization": currentToken }
       });
 
-      if (!res.ok) return alert("SSO Token invalid or expired!");
+      if (!res.ok) return alert("SSO Token invalid!");
 
       const data = await res.json();
       const tbody = document.getElementById("tableBody");
