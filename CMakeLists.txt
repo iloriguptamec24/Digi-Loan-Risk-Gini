@@ -1,81 +1,71 @@
+# ==============================================================================
+# 1. CMAKE VERSION & PROJECT SETUP
+# ==============================================================================
+# Minimum required CMake version for target features and dependency finders
 cmake_minimum_required(VERSION 3.14)
-project(DigiLoanRiskGini CXX)
 
+# Project Name and programming language specification (CXX = C++)
+project(DigiLoanServer CXX)
+
+# Enforce Modern C++17 Standard across all compiled source files
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Find System Dependencies
+# ==============================================================================
+# 2. EXTERNAL DEPENDENCIES & LIBRARIES
+# ==============================================================================
+# Find system POSIX threads package required for multi-threaded web server
+find_package(Threads REQUIRED)
+
+# Find SQLite3 development libraries for relational database storage
 find_package(SQLite3 REQUIRED)
+
+# Find OpenSSL libraries required by Crow HTTP server for SSL/crypto functionality
 find_package(OpenSSL REQUIRED)
 
-# Disable boost dependency for Crow and force nlohmann-json for jwt-cpp
-set(CROW_USE_BOOST OFF CACHE BOOL "" FORCE)
-set(JWT_JSON_TRAITS_ENGINE "nlohmann-json" CACHE STRING "" FORCE)
-set(JWT_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(JWT_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+# Find libcurl development package for outbound REST API HTTP POST calls (CIBIL API)
+find_package(CURL REQUIRED)
 
-include(FetchContent)
-
-# 1. Fetch standalone Asio
-FetchContent_Declare(
-  asio
-  GIT_REPOSITORY https://github.com/chriskohlhoff/asio.git
-  GIT_TAG master
-)
-FetchContent_MakeAvailable(asio)
-
-# Set Asio include path for Crow's CMake finder
-set(ASIO_INCLUDE_DIR "${asio_SOURCE_DIR}/asio/include" CACHE PATH "" FORCE)
-include_directories(${ASIO_INCLUDE_DIR})
-add_definitions(-DASIO_STANDALONE)
-
-# 2. Fetch Crow Framework
-FetchContent_Declare(
-  Crow
-  GIT_REPOSITORY https://github.com/CrowCpp/Crow.git
-  GIT_TAG master
+# ==============================================================================
+# 3. INCLUDE DIRECTORIES
+# ==============================================================================
+# Include custom header files from include/ along with external library header paths
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${SQLite3_INCLUDE_DIRS}
+    ${OPENSSL_INCLUDE_DIR}
+    ${CURL_INCLUDE_DIRS}
 )
 
-# 3. Fetch jwt-cpp Framework
-FetchContent_Declare(
-  jwt-cpp
-  GIT_REPOSITORY https://github.com/Thalhammer/jwt-cpp.git
-  GIT_TAG master
-)
-
-FetchContent_MakeAvailable(Crow jwt-cpp)
-
-# Include Header Directories
-include_directories(include ${jwt-cpp_SOURCE_DIR}/include)
-
-# Executable Target
-add_executable(DigiLoanServer 
-    src/main.cpp 
-    src/database.cpp 
+# ==============================================================================
+# 4. SOURCE FILE SPECIFICATION
+# ==============================================================================
+# Define C++ implementation files to be compiled into the final executable
+set(SOURCES
+    src/main.cpp
     src/cibil_score.cpp
+    src/database.cpp
 )
 
-# Copy static frontend assets into build folder
-file(COPY ${CMAKE_SOURCE_DIR}/public DESTINATION ${CMAKE_BINARY_DIR})
+# ==============================================================================
+# 5. TARGET EXECUTABLE & LINK LIBRARIES
+# ==============================================================================
+# Define the final executable binary name and its associated source list
+add_executable(DigiLoanServer ${SOURCES})
 
-# SQLite3 Target Fallback
-if(NOT TARGET SQLite3::SQLite3)
-  if(TARGET SQLite::SQLite3)
-    add_library(SQLite3::SQLite3 ALIAS SQLite::SQLite3)
-  else()
-    add_library(SQLite3::SQLite3 UNKNOWN IMPORTED)
-    set_target_properties(SQLite3::SQLite3 PROPERTIES
-      IMPORTED_LOCATION "${SQLite3_LIBRARIES}"
-      INTERFACE_INCLUDE_DIRECTORIES "${SQLite3_INCLUDE_DIRS}"
-    )
-  endif()
-endif()
-
-# Link Libraries
-target_link_libraries(DigiLoanServer PRIVATE 
-    SQLite3::SQLite3 
-    Crow::Crow 
-    OpenSSL::SSL 
+# Link internal threads, SQLite3, OpenSSL, and libcurl to the executable
+target_link_libraries(DigiLoanServer PRIVATE
+    Threads::Threads
+    ${SQLite3_LIBRARIES}
+    OpenSSL::SSL
     OpenSSL::Crypto
-    jwt-cpp::jwt-cpp
+    ${CURL_LIBRARIES}
 )
+
+# ==============================================================================
+# 6. STATIC ASSET MANAGEMENT
+# ==============================================================================
+# Automatically copy frontend assets from public/ into build/public/ during build.
+# This enables Crow to resolve relative paths and serve index.html seamlessly.
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/public/
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public)
