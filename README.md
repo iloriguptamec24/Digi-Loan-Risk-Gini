@@ -34,11 +34,13 @@ asynchronous I/O and HTTP networking.
 ## 🏗️ 2. Build & Compilation Instructions
 #### 🚀 Standard Build Procedure
 Run CMake to generate build configuration files, followed by cmake --build to compile the C++ source code:
-* Bash
+* **Bash**
 * Create and navigate into the build directory : **mkdir -p build && cd build**
 * Generate build configuration : **cmake ..**
 * Compile source code into the binary executable
     **cmake --build .**
+* Go to main dir : **cd ..**
+* Run Application : **./build/DigiLoanServer**
 
 #### 🚀 Clean Rebuild
 ```bash
@@ -48,6 +50,7 @@ If you modified CMakeLists.txt, updated static assets in public/index.html, or w
        -rf build/
         cmake -B build
         cmake --build build
+
 [!IMPORTANT]
     Static Assets Copy: CMake uses file(COPY ...) to sync public/index.html into build/public/.
     Running cmake --build build ensures any frontend updates are copied to the output target directory so Crow can serve them.
