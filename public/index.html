@@ -8,7 +8,7 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
 
-  <!-- Navbar -->
+  <!-- Top Navbar with SSO Controls -->
   <nav class="border-b border-slate-800 bg-slate-950 p-4">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-3">
@@ -25,35 +25,48 @@
   </nav>
 
   <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Application Form -->
+    <!-- Application Entry Form -->
     <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-xl h-fit">
-      <h2 class="text-lg font-semibold mb-4 text-slate-200">Personal Loan Application</h2>
+      <h2 class="text-lg font-semibold mb-4 text-slate-200">New Underwriting Application</h2>
       <form id="loanForm" class="space-y-4">
         <div>
           <label class="block text-xs font-medium text-slate-400">Applicant Full Name</label>
-          <input type="text" id="name" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none">
+          <input type="text" id="name" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
         </div>
+        
+        <!-- Loan Type Selection -->
+        <div>
+          <label class="block text-xs font-medium text-slate-400">Select Loan Type</label>
+          <select id="loanType" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
+            <option value="Personal">Personal Loan</option>
+            <option value="Education">Education Loan</option>
+            <option value="Auto">Auto Loan</option>
+            <option value="Home">Home Loan</option>
+            <option value="Business">Small Business Loan</option>
+          </select>
+        </div>
+
         <div>
           <label class="block text-xs font-medium text-slate-400">Gross Annual Income ($)</label>
-          <input type="number" id="income" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none">
+          <input type="number" id="income" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
         </div>
         <div>
           <label class="block text-xs font-medium text-slate-400">CIBIL Score (300 - 900)</label>
-          <input type="number" id="cibilScore" min="300" max="900" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none">
+          <input type="number" id="cibilScore" min="300" max="900" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
         </div>
         <div>
           <label class="block text-xs font-medium text-slate-400">Monthly Debts ($)</label>
-          <input type="number" id="monthlyDebts" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none">
+          <input type="number" id="monthlyDebts" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
         </div>
         <div>
-          <label class="block text-xs font-medium text-slate-400">Requested Personal Loan ($)</label>
-          <input type="number" id="loanAmount" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none">
+          <label class="block text-xs font-medium text-slate-400">Requested Loan ($)</label>
+          <input type="number" id="loanAmount" required class="w-full mt-1 p-2 bg-slate-900 border border-slate-700 rounded-lg focus:border-indigo-500 outline-none text-slate-200">
         </div>
         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 rounded-lg transition">Evaluate Risk & Save</button>
       </form>
     </div>
 
-    <!-- Analytics Dashboard -->
+    <!-- Data Dashboard Table -->
     <div class="lg:col-span-2 bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-xl">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold text-slate-200">Underwriting Decisions</h2>
@@ -66,8 +79,10 @@
             <tr>
               <th class="p-3">ID</th>
               <th class="p-3">Applicant</th>
+              <th class="p-3">Type</th>
               <th class="p-3">CIBIL</th>
-              <th class="p-3">Score</th>
+              <th class="p-3">Risk Factor</th>
+              <th class="p-3">Adj Score</th>
               <th class="p-3">Decision</th>
               <th class="p-3">Admin Action</th>
             </tr>
@@ -82,6 +97,11 @@
     let currentToken = "";
     let currentRole = "guest";
 
+    // Auto-login as Underwriter on initial page load
+    document.addEventListener("DOMContentLoaded", () => {
+      loginSSO('underwriter');
+    });
+
     function loginSSO(role) {
       currentRole = role;
       document.getElementById("roleBadge").innerText = `Role: ${role.toUpperCase()}`;
@@ -91,10 +111,11 @@
 
     document.getElementById("loanForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (!currentToken) return alert("Please log in using an SSO Role from top bar!");
+      if (!currentToken) return alert("Please select an SSO role from top navbar first!");
 
       const payload = {
         name: document.getElementById("name").value,
+        loanType: document.getElementById("loanType").value,
         income: parseFloat(document.getElementById("income").value),
         cibilScore: parseInt(document.getElementById("cibilScore").value),
         monthlyDebts: parseFloat(document.getElementById("monthlyDebts").value),
@@ -114,7 +135,7 @@
         document.getElementById("loanForm").reset();
         fetchReports();
       } else {
-        alert("Submission failed!");
+        alert("Failed to submit applicant.");
       }
     });
 
@@ -125,7 +146,7 @@
         headers: { "Authorization": currentToken }
       });
 
-      if (!res.ok) return alert("SSO Token invalid!");
+      if (!res.ok) return alert("SSO Token invalid or expired!");
 
       const data = await res.json();
       const tbody = document.getElementById("tableBody");
@@ -146,7 +167,9 @@
           <tr class="hover:bg-slate-900 transition">
             <td class="p-3 font-mono text-slate-500">#${item.id}</td>
             <td class="p-3 font-medium text-slate-200">${item.name}</td>
+            <td class="p-3"><span class="text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-indigo-300">${item.loanType}</span></td>
             <td class="p-3 font-semibold">${item.cibilScore}</td>
+            <td class="p-3 font-mono text-amber-400">${item.bankRiskFactor.toFixed(2)}x</td>
             <td class="p-3 font-bold text-indigo-400">${item.score.toFixed(1)}</td>
             <td class="p-3">
               <span class="px-2 py-0.5 text-xs rounded-full border ${badge}">${item.decision}</span>
@@ -169,7 +192,7 @@
       });
 
       if (res.ok) fetchReports();
-      else alert("Action forbidden for standard user role!");
+      else alert("Admin Override Forbidden!");
     }
   </script>
 </body>
