@@ -1,4 +1,4 @@
-# 🏗️ Technical Architecture & System Workflow (`ARCHITECTURE.md`)
+# 🏗️ Technical Architecture & System Workflow
 
 This document outlines the system architecture, component design, data flow pipelines, design patterns, and database schema for the **Digi-Loan-Risk-Gini** microservice platform.
 
