@@ -1,32 +1,41 @@
 #ifndef DATABASE_HPP
 #define DATABASE_HPP
 
-#include <sqlite3.h>
 #include <string>
 #include <vector>
 #include <memory>
-#include "crow.h"
 #include "cibil_score.hpp"
 
-// Output evaluation structure
 struct PersonalLoanResult {
+    double ltiRatio;
+    double foirRatio;
+    double bankRiskFactor;
     double score;
     std::string decision;
-    std::string riskTier;
-    double bankRiskFactor; // Indian Banking Product Risk Weight
-    double maxLoanCapacity;
     std::vector<std::string> rejectionReasons;
 };
 
-// =================================================================
-// OOP CONCEPT: ABSTRACTION & INHERITANCE
-// 'Loan' is an abstract base class. Subclasses inherit fields and override evaluate().
-// =================================================================
+struct ApplicantReport {
+    int id;
+    std::string name;
+    std::string loanType;
+    double income;
+    int cibilScore;
+    double monthlyDebts;
+    double requestedLoan;
+    double ltiRatio;
+    double foirRatio;
+    double bankRiskFactor;
+    double score;
+    std::string decision;
+    std::vector<std::string> rejectionReasons;
+};
+
 class Loan {
 protected:
     std::string name;
     double annualIncome;
-    CIBILScore cibilObj; // OOP Composition & Encapsulation
+    CIBILScore cibilObj;
     double monthlyDebts;
     double requestedLoan;
 
@@ -35,11 +44,6 @@ public:
         : name(name), annualIncome(income), cibilObj(cibil), monthlyDebts(debts), requestedLoan(loanAmt) {}
 
     virtual ~Loan() = default;
-
-    // =================================================================
-    // OOP CONCEPT: POLYMORPHISM
-    // Pure virtual method overriden by each specific loan type.
-    // =================================================================
     virtual PersonalLoanResult evaluate() const = 0;
 };
 
@@ -73,27 +77,32 @@ public:
     PersonalLoanResult evaluate() const override;
 };
 
-// =================================================================
-// OOP CONCEPT: FACTORY PATTERN
-// Encapsulates object instantiation and returns a polymorphic pointer.
-// =================================================================
 class LoanFactory {
 public:
-    static std::unique_ptr<Loan> createLoan(const std::string& type, const std::string& name, double income, int cibil, double debts, double loanAmt);
+    static std::unique_ptr<Loan> createLoan(
+        const std::string& type, 
+        const std::string& name, 
+        double income, 
+        int cibil, 
+        double debts, 
+        double loanAmt
+    );
 };
 
-class LoanDatabase {
-private:
-    sqlite3* db;
-
+class Database {
 public:
-    LoanDatabase(const std::string& db_path);
-    ~LoanDatabase();
-
-    bool createTables();
-    bool addApplicant(const std::string& name, const std::string& loanType, double annualIncome, int cibilScore, double monthlyDebts, double requestedLoan);
-    bool overrideDecision(int applicantId, const std::string& newDecision, const std::string& adminId);
-    crow::json::wvalue getApplicantsAsJson();
+    static void initDatabase();
+    static bool saveApplicant(
+        const std::string& name,
+        const std::string& loanType,
+        double income,
+        int cibilScore,
+        double monthlyDebts,
+        double requestedLoan,
+        const PersonalLoanResult& result
+    );
+    static std::vector<ApplicantReport> getAllReports();
+    static bool overrideDecision(int id, const std::string& newDecision);
 };
 
 #endif
