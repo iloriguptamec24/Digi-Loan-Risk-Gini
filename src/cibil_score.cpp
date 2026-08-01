@@ -17,7 +17,7 @@ int CIBILService::fetchLiveCIBILScore(const std::string& pan, const std::string&
         std::string url = "https://cibil-mock-server.onrender.com/api/v1/cibil/score";
         
         nlohmann::json reqJson;
-        reqJson["pan"] = pan;
+        reqJson["PAN"] = pan;
         reqJson["name"] = name;
         reqJson["mobile"] = mobile;
         reqJson["dob"] = dob;
