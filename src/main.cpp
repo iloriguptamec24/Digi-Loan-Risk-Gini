@@ -1,162 +1,158 @@
 #include "crow.h"
 #include "database.hpp"
-#include <jwt-cpp/jwt.h>
+#include "cibil_score.hpp"
 #include <iostream>
-#include <filesystem>
-
-// Structure to track user session details extracted from SSO tokens
-struct UserSession {
-    std::string userId;
-    std::string role;
-    bool isAuthenticated = false;
-};
-
-// Middleware function to inspect incoming Authorization Headers
-UserSession authenticateSSOToken(const crow::request& req) {
-    UserSession session;
-    auto authHeader = req.get_header_value("Authorization");
-
-    // Check if header is missing or improperly formatted
-    if (authHeader.empty() || authHeader.find("Bearer ") != 0) {
-        return session; // Returns session with isAuthenticated = false
-    }
-
-    std::string token = authHeader.substr(7); // Strip "Bearer "
-
-    // Handle simulation tokens passed by the frontend SSO switcher
-    if (token == "ADMIN_MOCK_JWT_TOKEN") {
-        session.userId = "admin_user_01";
-        session.role = "admin";
-        session.isAuthenticated = true;
-        return session;
-    } else if (token == "USER_MOCK_JWT_TOKEN") {
-        session.userId = "underwriter_01";
-        session.role = "underwriter";
-        session.isAuthenticated = true;
-        return session;
-    }
-
-    // Standard JWT decoding fallback
-    try {
-        auto decoded = jwt::decode(token);
-        session.userId = decoded.get_payload_claim("sub").as_string();
-        session.role = decoded.get_payload_claim("role").as_string();
-        session.isAuthenticated = true;
-    } catch (...) {
-        session.isAuthenticated = false;
-    }
-
-    return session;
-}
 
 int main() {
+    // ------------------------------------------------------------------
+    // 1. DATABASE INITIALIZATION
+    // Ensure data directory exists and SQLite schema is created on startup.
+    // ------------------------------------------------------------------
+    Database::initDatabase();
+
+    // Create the primary Crow microservice application engine
     crow::SimpleApp app;
 
-    // 1. Ensure the 'data' directory exists programmatically to avoid SQLite path errors
-    try {
-        std::filesystem::create_directories("data");
-    } catch (const std::exception& e) {
-        std::cerr << "Directory warning: " << e.what() << std::endl;
-    }
-
-    // 2. Initialize Database Connection
-    LoanDatabase db("data/digi_loan_risk.db");
-    if (!db.createTables()) {
-        std::cerr << "Failed to initialize database tables.\n";
-        return 1;
-    }
-
-    // -------------------------------------------------------------
-    // Route 1: Serve Static Web UI Dashboard
-    // -------------------------------------------------------------
+    // ==================================================================
+    // ROUTE 1: GET /
+    // Serves the static web dashboard (public/index.html)
+    // ==================================================================
     CROW_ROUTE(app, "/")
     ([](const crow::request&, crow::response& res) {
+        // Serves index.html copied to public/ folder during the CMake build step
         res.set_static_file_info("public/index.html");
         res.end();
     });
 
-    // -------------------------------------------------------------
-    // Route 2: GET API - Fetch All Evaluated Applications
-    // -------------------------------------------------------------
-    CROW_ROUTE(app, "/api/reports").methods(crow::HTTPMethod::GET)
-    ([&db](const crow::request& req) {
-        UserSession user = authenticateSSOToken(req);
-        if (!user.isAuthenticated) {
-            return crow::response(401, "SSO Login Required");
-        }
-        return crow::response(200, db.getApplicantsAsJson());
-    });
-
-    // -------------------------------------------------------------
-    // Route 3: POST API - Submit New Loan Application
-    // -------------------------------------------------------------
-    CROW_ROUTE(app, "/api/applicant").methods(crow::HTTPMethod::POST)
-    ([&db](const crow::request& req) {
-        UserSession user = authenticateSSOToken(req);
-        if (!user.isAuthenticated) {
-            return crow::response(401, "SSO Login Required");
-        }
-
+    // ==================================================================
+    // ROUTE 2: POST /api/applicant
+    // Receives applicant details, queries CIBIL API, runs OOP Risk Engine,
+    // and saves the underwriting decision into SQLite.
+    // ==================================================================
+    CROW_ROUTE(app, "/api/applicant").methods("POST"_method)
+    ([](const crow::request& req) {
+        // Parse incoming HTTP JSON request payload
         auto body = crow::json::load(req.body);
-        if (!body) {
-            return crow::response(400, "Invalid JSON payload");
-        }
+        if (!body) return crow::response(400, "Invalid JSON payload");
 
-        std::string name = body["name"].s();
-        
-        // Explicitly extract loanType as std::string to resolve type ambiguity
-        std::string loanType = "Personal";
-        if (body.has("loanType")) {
-            loanType = std::string(body["loanType"].s());
-        }
-
+        // Extract required common financial fields
+        std::string name = std::string(body["name"].s());
+        std::string loanType = std::string(body["loanType"].s());
         double income = body["income"].d();
-        int cibilScore = body["cibilScore"].i();
         double monthlyDebts = body["monthlyDebts"].d();
         double loanAmount = body["loanAmount"].d();
 
-        // Pass all 6 arguments to addApplicant()
-        if (db.addApplicant(name, loanType, income, cibilScore, monthlyDebts, loanAmount)) {
-            crow::json::wvalue res;
-            res["status"] = "success";
-            return crow::response(201, res);
+        int cibilScore = 700; // Default fallback score
+
+        // --------------------------------------------------------------
+        // CIBIL SCORE EVALUATION
+        // Case A: Guest mode submission with identity parameters (PAN, Mobile, DOB)
+        //         -> Fetch real-time score via external CIBIL REST API call.
+        // Case B: Underwriter/Admin mode submission
+        //         -> Use direct CIBIL score input from the request.
+        // --------------------------------------------------------------
+        if (body.has("pan") && body.has("mobile") && body.has("dob")) {
+            std::string pan = std::string(body["pan"].s());
+            std::string mobile = std::string(body["mobile"].s());
+            std::string dob = std::string(body["dob"].s());
+
+            // Outbound libcurl HTTP POST call to cibil-mock-server
+            cibilScore = CIBILService::fetchLiveCIBILScore(pan, name, mobile, dob);
+        } else if (body.has("cibilScore")) {
+            cibilScore = body["cibilScore"].i();
         }
-        return crow::response(500, "Database insertion failed");
+
+        // --------------------------------------------------------------
+        // OOP RISK EVALUATION ENGINE
+        // 1. Use LoanFactory (Creational Design Pattern) to instantiate loan subclass.
+        // 2. Perform polymorphic evaluation (evaluate()) to derive risk score.
+        // --------------------------------------------------------------
+        auto loanObj = LoanFactory::createLoan(loanType, name, income, cibilScore, monthlyDebts, loanAmount);
+        PersonalLoanResult result = loanObj->evaluate();
+
+        // Save application record & decision result into SQLite database
+        Database::saveApplicant(name, loanType, income, cibilScore, monthlyDebts, loanAmount, result);
+
+        // Construct JSON response payload
+        crow::json::wvalue resJson;
+        resJson["status"] = "SUCCESS";
+        resJson["fetchedCibilScore"] = cibilScore;
+        resJson["decision"] = result.decision;
+
+        return crow::response(201, resJson);
     });
 
-    // -------------------------------------------------------------
-    // Route 4: POST API - Admin-Only Decision Override
-    // -------------------------------------------------------------
-    CROW_ROUTE(app, "/api/admin/override").methods(crow::HTTPMethod::POST)
-    ([&db](const crow::request& req) {
-        UserSession user = authenticateSSOToken(req);
-        if (!user.isAuthenticated) {
-            return crow::response(401, "SSO Login Required");
-        }
-        if (user.role != "admin") {
-            return crow::response(403, "Forbidden: Admin privileges required");
+    // ==================================================================
+    // ROUTE 3: GET /api/reports
+    // Retrieves all evaluated applicant records for staff inspection.
+    // ==================================================================
+    CROW_ROUTE(app, "/api/reports").methods("GET"_method)
+    ([](const crow::request& req) {
+        // Query database for all applicant records ordered by ID descending
+        auto reports = Database::getAllReports();
+        crow::json::wvalue::list reportList;
+
+        // Map internal C++ structs to JSON array response
+        for (const auto& rep : reports) {
+            crow::json::wvalue item;
+            item["id"] = rep.id;
+            item["name"] = rep.name;
+            item["loanType"] = rep.loanType;
+            item["income"] = rep.income;
+            item["cibilScore"] = rep.cibilScore;
+            item["monthlyDebts"] = rep.monthlyDebts;
+            item["requestedLoan"] = rep.requestedLoan;
+            item["bankRiskFactor"] = rep.bankRiskFactor;
+            item["score"] = rep.score;
+            item["decision"] = rep.decision;
+
+            // Map rejection reasons list
+            crow::json::wvalue::list reasonsList;
+            for (size_t i = 0; i < rep.rejectionReasons.size(); ++i) {
+                reasonsList.push_back(rep.rejectionReasons[i]);
+            }
+            item["rejectionReasons"] = std::move(reasonsList);
+            reportList.push_back(std::move(item));
         }
 
+        crow::json::wvalue resJson;
+        resJson = std::move(reportList);
+        return crow::response(200, resJson);
+    });
+
+    // ==================================================================
+    // ROUTE 4: POST /api/admin/override
+    // Admin privilege route to manually override system decision.
+    // ==================================================================
+    CROW_ROUTE(app, "/api/admin/override").methods("POST"_method)
+    ([](const crow::request& req) {
         auto body = crow::json::load(req.body);
-        if (!body) {
-            return crow::response(400, "Invalid JSON payload");
+        if (!body || !body.has("id") || !body.has("overrideDecision")) {
+            return crow::response(400, "Invalid payload");
         }
 
-        int applicantId = body["id"].i();
-        std::string newDecision = body["overrideDecision"].s();
+        int id = body["id"].i();
+        std::string newDecision = std::string(body["overrideDecision"].s());
 
-        if (db.overrideDecision(applicantId, newDecision, user.userId)) {
-            crow::json::wvalue res;
-            res["status"] = "success";
-            return crow::response(200, res);
+        // Update database record status
+        bool success = Database::overrideDecision(id, newDecision);
+        if (success) {
+            crow::json::wvalue resJson;
+            resJson["status"] = "OVERRIDDEN";
+            return crow::response(200, resJson);
+        } else {
+            return crow::response(500, "Database update failed");
         }
-        return crow::response(500, "Failed to apply decision override");
     });
 
-    std::cout << "\n=======================================================\n";
+    // ------------------------------------------------------------------
+    // START CROW WEB SERVER
+    // Listens on HTTP Port 18080 with multi-threaded async execution.
+    // ------------------------------------------------------------------
+    std::cout << "=======================================================\n";
     std::cout << "🚀 DIGI-LOAN-RISK-GINI RUNNING AT http://localhost:18080\n";
-    std::cout << "=======================================================\n\n";
+    std::cout << "=======================================================\n";
 
-    // Launch asynchronous multithreaded server
     app.port(18080).multithreaded().run();
+    return 0;
 }
