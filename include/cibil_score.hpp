@@ -3,31 +3,21 @@
 
 #include <string>
 
-enum class CIBILRatingTier {
-    EXCELLENT,  // 775 - 900
-    GOOD,       // 725 - 774
-    FAIR,       // 650 - 724
-    SUBPRIME    // 300 - 649 (Hard Reject Threshold in India)
-};
-
-// =================================================================
-// OOP CONCEPT: ENCAPSULATION
-// Private internal state (score) accessed through controlled methods.
-// =================================================================
 class CIBILScore {
 private:
-    int score;
+    int rawScore;
 
 public:
-    explicit CIBILScore(int scoreVal = 300);
+    explicit CIBILScore(int score) : rawScore(score) {}
+    int getRawScore() const { return rawScore; }
+    bool isSubprime(int threshold = 650) const { return rawScore < threshold; }
+    double getNormalizedSubScore() const { return static_cast<double>(rawScore); }
+};
 
-    int getValue() const;
-    bool isValid() const;
-    bool isSubprime(int minimumThreshold = 650) const;
-    
-    CIBILRatingTier getRatingTier() const;
-    std::string getRatingTierString() const;
-    double getNormalizedSubScore() const;
+class CIBILService {
+public:
+    // Calls external CIBIL mock server via curl POST and returns the live CIBIL score
+    static int fetchLiveCIBILScore(const std::string& pan, const std::string& name, const std::string& mobile, const std::string& dob);
 };
 
 #endif
