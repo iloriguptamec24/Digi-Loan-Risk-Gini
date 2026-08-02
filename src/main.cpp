@@ -42,7 +42,7 @@ int main() {
         double monthlyDebts = body["monthlyDebts"].d();
         double loanAmount = body["loanAmount"].d();
 
-        int cibilScore = 700; // Default fallback score
+        int cibilScore = 800; // Default fallback score
 
         // --------------------------------------------------------------
         // CIBIL SCORE EVALUATION
