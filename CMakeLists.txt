@@ -37,6 +37,8 @@ set(SERVER_SOURCES
     src/main.cpp
     src/cibil_score.cpp
     src/database.cpp
+    src/loan_factory.cpp
+    src/personal_loan.cpp
 )
 
 # ==============================================================================
@@ -58,6 +60,7 @@ target_link_libraries(DigiLoanServer PRIVATE
     Threads::Threads
     ${Boost_LIBRARIES}
     ${SQLite3_LIBRARIES}
+    SQLite::SQLite3
     OpenSSL::SSL
     OpenSSL::Crypto
     ${CURL_LIBRARIES}
@@ -78,13 +81,12 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/public/
 # ==============================================================================
 # 5. INDEPENDENT CIBIL UNIT TEST EXECUTABLE
 # ==============================================================================
-# ==============================================================================
-# INDEPENDENT CIBIL UNIT TEST EXECUTABLE
-# ==============================================================================
 add_executable(TestCIBIL 
     tests/test_cibil.cpp 
     src/cibil_score.cpp
     src/database.cpp
+    src/loan_factory.cpp
+    src/personal_loan.cpp
 )
 
 target_include_directories(TestCIBIL PRIVATE
@@ -96,10 +98,10 @@ target_include_directories(TestCIBIL PRIVATE
 
 # Link both raw library variable AND modern SQLite::SQLite3 target
 target_link_libraries(TestCIBIL PRIVATE 
+    Threads::Threads
     ${CURL_LIBRARIES}
     ${SQLite3_LIBRARIES}
     SQLite::SQLite3
-    Threads::Threads
 )
 
 if(TARGET nlohmann_json::nlohmann_json)
