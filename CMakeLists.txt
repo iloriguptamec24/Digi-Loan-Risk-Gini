@@ -45,7 +45,8 @@ endif()
 set(SERVER_SOURCES
     src/main.cpp
     src/cibil_score.cpp
-    src/database.cpp`
+    src/database.cpp
+    tests/test_cibil.cpp`
 )
 
 # ==============================================================================
