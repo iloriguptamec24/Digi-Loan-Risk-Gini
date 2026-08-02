@@ -19,13 +19,13 @@ int main() {
     // ------------------------------------------------------------------
     // 2. APPLICANT TEST DATA
     // ------------------------------------------------------------------
-    std::string pan = "AZIDI0001I";
-    std::string name = "Priya Kumar";
+    std::string pan = "PSFGF0003W";
+    std::string name = "Priya Kumari";
     std::string mobile = "9876543210";
     std::string dob = "1995-05-15";
     std::string ltype = "AutoLoan";
 
-    double loanAmount = 1000000.0;
+    double loanAmount = 4000000.0;
     double existingEmi = 500.0;
     double monthlyIncome = 70000.0;
 

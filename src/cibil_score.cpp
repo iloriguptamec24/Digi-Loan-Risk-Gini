@@ -17,7 +17,8 @@ int CIBILService::fetchLiveCIBILScore(
 ) {
     CURL* curl = curl_easy_init();
     std::string readBuffer;
-    int score = 700; // Fallback score
+    int score = 699; // Fallback score
+    int cibilscore = 600; // Testing score
 
     if (curl) {
         std::string url = "https://cibil-mock-server.onrender.com/api/v1/cibil/score";

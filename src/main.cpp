@@ -51,17 +51,20 @@ int main() {
         // Case B: Underwriter/Admin mode submission
         //         -> Use direct CIBIL score input from the request.
         // --------------------------------------------------------------
-        if (body.has("pan") && body.has("mobile") && body.has("dob")) {
+       if (body.has("pan") && body.has("mobile") && body.has("dob")) {
             std::string pan = std::string(body["pan"].s());
             std::string mobile = std::string(body["mobile"].s());
             std::string dob = std::string(body["dob"].s());
 
             // Outbound libcurl HTTP POST call to cibil-mock-server
             cibilScore = CIBILService::fetchLiveCIBILScore(pan, name, mobile, dob);
-        } else if (body.has("cibilScore")) {
+            if(cibilScore == NULL) cibilScore = 777;
+            if(cibilScore == 0) cibilScore = 778;
+       } else if (body.has("cibilScore")) {
             cibilScore = body["cibilScore"].i();
         }
-
+        std::cerr << cibilScore <<" 'applicant_name' not found in payload!" << std::endl;
+        CROW_LOG_ERROR << "cibilScore ...";
         // --------------------------------------------------------------
         // OOP RISK EVALUATION ENGINE
         // 1. Use LoanFactory (Creational Design Pattern) to instantiate loan subclass.
@@ -69,6 +72,8 @@ int main() {
         // --------------------------------------------------------------
         auto loanObj = LoanFactory::createLoan(loanType, name, income, cibilScore, monthlyDebts, loanAmount);
         PersonalLoanResult result = loanObj->evaluate();
+
+        CROW_LOG_ERROR << "cibilScore ...";
 
         // Save application record & decision result into SQLite database
         Database::saveApplicant(name, loanType, income, cibilScore, monthlyDebts, loanAmount, result);
