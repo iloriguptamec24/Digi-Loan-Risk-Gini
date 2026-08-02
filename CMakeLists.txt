@@ -36,9 +36,7 @@ endif()
 set(SERVER_SOURCES
     src/main.cpp
     src/cibil_score.cpp
-    src/database.cpp
-    src/loan_factory.cpp
-    src/personal_loan.cpp
+    src/database.cpp`
 )
 
 # ==============================================================================
@@ -85,8 +83,6 @@ add_executable(TestCIBIL
     tests/test_cibil.cpp 
     src/cibil_score.cpp
     src/database.cpp
-    src/loan_factory.cpp
-    src/personal_loan.cpp
 )
 
 target_include_directories(TestCIBIL PRIVATE
