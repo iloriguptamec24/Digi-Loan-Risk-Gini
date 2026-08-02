@@ -1,5 +1,0 @@
-{
-  "name": "C++ Digi-Loan Workspace",
-  "image": "mcr.microsoft.com/devcontainers/cpp:ubuntu-22.04",
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libasio-dev libsqlite3-dev libssl-dev libcurl4-openssl-dev nlohmann-json3-dev libboost-dev"
-}
