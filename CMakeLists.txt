@@ -1,7 +1,7 @@
 # ==============================================================================
 # DIGI-LOAN-RISK-GINI CMAKE BUILD CONFIGURATION
 # ==============================================================================
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.22.1)
 
 project(DigiLoanServer CXX)
 
@@ -19,6 +19,14 @@ if(POLICY CMP0144)
     cmake_policy(SET CMP0144 NEW)
 endif()
 
+set(Boost_INCLUDE_DIR "/usr/include")
+
+# Force default search paths for system-installed headers
+if(NOT Boost_INCLUDE_DIR)
+    set(Boost_INCLUDE_DIR "/usr/include")
+endif()
+
+
 # ==============================================================================
 # 1. EXTERNAL SYSTEM DEPENDENCIES
 # ==============================================================================
@@ -27,6 +35,7 @@ find_package(Boost REQUIRED)
 find_package(SQLite3 REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(CURL REQUIRED)
+find_package(nlohmann_json REQUIRED) # or find_path for header-only fallback
 
 # Optional search for system nlohmann_json package
 find_package(nlohmann_json QUIET)
@@ -46,7 +55,6 @@ set(SERVER_SOURCES
     src/main.cpp
     src/cibil_score.cpp
     src/database.cpp
-    tests/test_cibil.cpp`
 )
 
 # ==============================================================================
@@ -90,7 +98,7 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/public/
 # 5. INDEPENDENT CIBIL UNIT TEST EXECUTABLE
 # ==============================================================================
 add_executable(TestCIBIL 
-    tests/test_cibil.cpp 
+    tests/test_cibil.cpp
     src/cibil_score.cpp
     src/database.cpp
 )

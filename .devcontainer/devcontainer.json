@@ -1,5 +1,4 @@
 {
-  "name": "C++ Development Environment",
-  "image": "mcr.microsoft.com/devcontainers/cpp:ubuntu-22.04",
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libboost-dev libboost-all-dev"
+  "name": "C++ Digi-Loan Environment",
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libboost-dev libboost-all-dev libsqlite3-dev nlohmann-json3-dev"
 }
