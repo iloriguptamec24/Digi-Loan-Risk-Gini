@@ -1,7 +1,7 @@
 # ==============================================================================
 # DIGI-LOAN-RISK-GINI CMAKE BUILD CONFIGURATION
 # ==============================================================================
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.28)
 
 project(DigiLoanServer CXX)
 
@@ -9,6 +9,15 @@ project(DigiLoanServer CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Add hints for CMake to find Boost
+set(BOOST_ROOT "/path/to/boost")
+set(Boost_NO_SYSTEM_PATHS ON)
+
+# Set CMP0144 policy to NEW so CMake respects BOOST_ROOT
+if(POLICY CMP0144)
+    cmake_policy(SET CMP0144 NEW)
+endif()
 
 # ==============================================================================
 # 1. EXTERNAL SYSTEM DEPENDENCIES
