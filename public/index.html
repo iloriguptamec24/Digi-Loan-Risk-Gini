@@ -148,7 +148,7 @@
 
         <!-- Submit Action Button -->
         <div class="sm:col-span-2 pt-2">
-          <button type="submit" class="accent-bg text-white w-full font-semibold py-2.5 rounded-lg transition shadow-md text-xs tracking-wider uppercase">Submit Application</button>
+          <button type="submit" class="accent-bg text-white w-full font-semibold py-2.5 rounded-lg transition shadow-md text-xs tracking-wider uppercase flex items-center justify-center">Submit Application</button>
         </div>
       </form>
     </div>
@@ -708,10 +708,13 @@
     }
 
     /**
-     * Loan Application Form Submission Handler
+     * Loan Application Form Submission Handler (With Loading Progress Feedback)
      */
     document.getElementById("loanForm").addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalBtnContent = submitBtn.innerHTML;
 
       const panVal = document.getElementById("pan").value.trim();
       const nameVal = document.getElementById("name").value.trim();
@@ -734,6 +737,19 @@
         monthlyDebts: monthlyDebtsVal,
         loanAmount: loanAmountVal
       };
+
+      // SHOW PROGRESS / LOADING STATE
+      submitBtn.disabled = true;
+      submitBtn.classList.add("opacity-75", "cursor-wait");
+      submitBtn.innerHTML = `
+        <span class="inline-flex items-center gap-2">
+          <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Evaluating Risk Engine...
+        </span>
+      `;
 
       try {
         const apiUrl = window.location.port === "" ? "/api/applicant" : "http://localhost:18080/api/applicant";
@@ -772,11 +788,16 @@
           document.getElementById("loanForm").reset();
           if (currentRole !== 'guest') fetchReports();
         } else {
-          alert("Failed to record application. Please verify server connection.");
+          alert("Failed to record application. Please verify inputs.");
         }
       } catch (err) {
         console.error("Submission Error:", err);
         alert("Error connecting to DigiLoanServer at http://localhost:18080");
+      } finally {
+        // RESTORE SUBMIT BUTTON STATE
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("opacity-75", "cursor-wait");
+        submitBtn.innerHTML = originalBtnContent;
       }
     });
 
@@ -801,7 +822,6 @@
 
         const responseData = await res.json();
         
-        // Safely unwrap data array whether server sends raw [] or { data: [] }
         if (Array.isArray(responseData)) {
           cachedReportsData = responseData;
         } else if (responseData && Array.isArray(responseData.data)) {
