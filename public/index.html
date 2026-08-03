@@ -3,95 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Digi-Loan-Risk-Gini Dashboard</title>
+  <title id="pageTitle">Digital Loan Portal</title>
+  <!-- Tailwind CSS CDN Integration -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
   <style>
-    /* Eye-Comfortable Light Role Themes (Muted Contrast / Anti-Fatigue) */
-    
-    /* 1. Guest Role: Soft Sage & Mint */
-    body.theme-guest { background-color: #f0fdf4; color: #0f172a; }
-    .theme-guest .nav-bg { background-color: #ffffff; border-color: #d1fae5; }
-    .theme-guest .card-bg { background-color: #ffffff; border-color: #a7f3d0; }
-    .theme-guest .accent-text { color: #047857; }
-    .theme-guest .accent-bg { background-color: #059669; }
-    .theme-guest .accent-bg:hover { background-color: #047857; }
-    .theme-guest .input-bg { background-color: #f8fafc; border-color: #cbd5e1; color: #0f172a; }
-    .theme-guest .input-bg:focus { border-color: #059669; }
-    .theme-guest .pill-badge { background-color: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+    /* ==========================================================================
+       ROLE-BASED PALETTE THEMES (Light Anti-Fatigue Accessibility Palette)
+       ========================================================================== */
+
+    /* 1. Guest Role: Mint & Sage Green Theme */
+    body.theme-guest { background-color: #f8fafc; color: #0f172a; }
+    .theme-guest .nav-bg { background-color: #ffffff; border-color: #e2e8f0; }
+    .theme-guest .card-bg { background-color: #ffffff; border-color: #cbd5e1; }
+    .theme-guest .accent-text { color: #0f766e; }
+    .theme-guest .accent-bg { background-color: #0d9488; }
+    .theme-guest .accent-bg:hover { background-color: #0f766e; }
+    .theme-guest .input-bg { background-color: #ffffff; border-color: #cbd5e1; color: #0f172a; }
+    .theme-guest .pill-badge { background-color: #ccfbf1; color: #115e59; border-color: #99f6e4; }
     .theme-guest .text-muted { color: #475569; }
     .theme-guest .border-subtle { border-color: #e2e8f0; }
-    .theme-guest .table-header { background-color: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
-    .theme-guest .table-row:hover { background-color: #f0fdf4; }
 
-    /* 2. Underwriter Role: Soft Sky & Cerulean Blue */
-    body.theme-underwriter { background-color: #f0f9ff; color: #0f172a; }
-    .theme-underwriter .nav-bg { background-color: #ffffff; border-color: #bae6fd; }
-    .theme-underwriter .card-bg { background-color: #ffffff; border-color: #7dd3fc; }
-    .theme-underwriter .accent-text { color: #0284c7; }
+    /* 2. Underwriter Role: Cerulean Sky Blue Theme */
+    body.theme-underwriter { background-color: #f8fafc; color: #0f172a; }
+    .theme-underwriter .nav-bg { background-color: #ffffff; border-color: #e2e8f0; }
+    .theme-underwriter .card-bg { background-color: #ffffff; border-color: #cbd5e1; }
+    .theme-underwriter .accent-text { color: #0369a1; }
     .theme-underwriter .accent-bg { background-color: #0284c7; }
     .theme-underwriter .accent-bg:hover { background-color: #0369a1; }
-    .theme-underwriter .input-bg { background-color: #f8fafc; border-color: #cbd5e1; color: #0f172a; }
-    .theme-underwriter .input-bg:focus { border-color: #0284c7; }
-    .theme-underwriter .pill-badge { background-color: #e0f2fe; color: #075985; border-color: #38bdf8; }
+    .theme-underwriter .input-bg { background-color: #ffffff; border-color: #cbd5e1; color: #0f172a; }
+    .theme-underwriter .pill-badge { background-color: #e0f2fe; color: #075985; border-color: #bae6fd; }
     .theme-underwriter .text-muted { color: #475569; }
     .theme-underwriter .border-subtle { border-color: #e2e8f0; }
-    .theme-underwriter .table-header { background-color: #f0f9ff; color: #075985; border-color: #7dd3fc; }
-    .theme-underwriter .table-row:hover { background-color: #f8fafc; }
+    .theme-underwriter .table-header { background-color: #f1f5f9; color: #334155; border-color: #cbd5e1; }
 
-    /* 3. Admin Role: Soft Lavender & Amethyst Purple */
-    body.theme-admin { background-color: #faf5ff; color: #0f172a; }
-    .theme-admin .nav-bg { background-color: #ffffff; border-color: #e9d5ff; }
-    .theme-admin .card-bg { background-color: #ffffff; border-color: #d8b4fe; }
-    .theme-admin .accent-text { color: #7e22ce; }
-    .theme-admin .accent-bg { background-color: #9333ea; }
-    .theme-admin .accent-bg:hover { background-color: #7e22ce; }
-    .theme-admin .input-bg { background-color: #f8fafc; border-color: #cbd5e1; color: #0f172a; }
-    .theme-admin .input-bg:focus { border-color: #9333ea; }
-    .theme-admin .pill-badge { background-color: #f3e8ff; color: #6b21a8; border-color: #c084fc; }
+    /* 3. Admin Role: Amethyst & Deep Lavender Theme */
+    body.theme-admin { background-color: #f8fafc; color: #0f172a; }
+    .theme-admin .nav-bg { background-color: #ffffff; border-color: #e2e8f0; }
+    .theme-admin .card-bg { background-color: #ffffff; border-color: #cbd5e1; }
+    .theme-admin .accent-text { color: #6b21a8; }
+    .theme-admin .accent-bg { background-color: #7e22ce; }
+    .theme-admin .accent-bg:hover { background-color: #6b21a8; }
+    .theme-admin .input-bg { background-color: #ffffff; border-color: #cbd5e1; color: #0f172a; }
+    .theme-admin .pill-badge { background-color: #f3e8ff; color: #581c87; border-color: #e9d5ff; }
     .theme-admin .text-muted { color: #475569; }
     .theme-admin .border-subtle { border-color: #e2e8f0; }
-    .theme-admin .table-header { background-color: #faf5ff; color: #6b21a8; border-color: #d8b4fe; }
-    .theme-admin .table-row:hover { background-color: #fdf4ff; }
+    .theme-admin .table-header { background-color: #f1f5f9; color: #334155; border-color: #cbd5e1; }
   </style>
 </head>
 <body class="theme-guest min-h-screen font-sans transition-colors duration-300">
 
-  <!-- Top Navigation Bar -->
+  <!-- TOP NAVIGATION BAR -->
   <nav class="nav-bg border-b p-4 shadow-sm transition-colors duration-300">
-    <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
       <div class="flex items-center space-x-3">
-        <h1 class="text-xl font-bold accent-text">🏦 Digi-Loan-Risk-Gini</h1>
-        <span id="roleBadge" class="text-xs pill-badge border px-3 py-0.5 rounded-full font-medium">Role: Guest</span>
+        <h1 id="portalHeader" class="text-xl font-bold tracking-tight accent-text">🏦 Digital Loan Portal</h1>
+        <span id="roleBadge" class="text-xs pill-badge border px-3 py-0.5 rounded-full font-semibold uppercase tracking-wider">Role: Guest</span>
       </div>
 
+      <!-- Single Sign-On Role Selector Switcher -->
       <div class="flex items-center space-x-2 text-xs">
-        <span class="text-muted">SSO Portal:</span>
-        <button onclick="loginSSO('guest')" id="btnGuest" class="px-3 py-1 rounded border font-semibold transition">Guest SSO</button>
-        <button onclick="loginSSO('underwriter')" id="btnUnderwriter" class="px-3 py-1 rounded border font-semibold transition">Underwriter SSO</button>
-        <button onclick="loginSSO('admin')" id="btnAdmin" class="px-3 py-1 rounded border font-semibold transition">Admin SSO</button>
+        <span class="text-muted font-medium">SSO Authentication:</span>
+        <button onclick="loginSSO('guest')" id="btnGuest" class="px-3 py-1.5 rounded border font-semibold transition shadow-sm">Guest SSO</button>
+        <button onclick="loginSSO('underwriter')" id="btnUnderwriter" class="px-3 py-1.5 rounded border font-semibold transition shadow-sm">Underwriter SSO</button>
+        <button onclick="loginSSO('admin')" id="btnAdmin" class="px-3 py-1.5 rounded border font-semibold transition shadow-sm">Admin SSO</button>
       </div>
     </div>
   </nav>
 
-  <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- MAIN APPLICANT & DASHBOARD GRID LAYOUT -->
+  <main class="max-w-[1600px] mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
     
-    <!-- Application Entry Form -->
-    <div class="card-bg p-6 rounded-xl border shadow-lg h-fit transition-colors duration-300 lg:col-span-1">
-      <h2 id="formTitle" class="text-lg font-semibold mb-4 accent-text">Apply for a Loan</h2>
+    <!-- LEFT SECTION: Applicant Data Capture Form (Spans 4 Columns) -->
+    <div class="card-bg p-6 rounded-xl border shadow-md h-fit transition-colors duration-300 lg:col-span-4">
+      <div class="border-b border-subtle pb-3 mb-4">
+        <h2 id="formTitle" class="text-lg font-bold accent-text">New Loan Application</h2>
+        <p class="text-xs text-muted mt-0.5">Submit borrower details for automated credit assessment</p>
+      </div>
       
-      <!-- 2-COLUMN FORM GRID -->
       <form id="loanForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         
-        <!-- Applicant Name -->
+        <!-- Field 1: Primary Key / PAN Card Number -->
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-semibold text-slate-700">PAN Card Number <span class="text-red-500">*</span></label>
+          <input type="text" id="pan" required placeholder="AZIDI0001I" pattern="[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}" title="10-character Indian PAN format (e.g. ABCDE1234F)" oninput="this.value = this.value.toUpperCase()" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none uppercase transition text-xs font-mono font-semibold">
+        </div>
+
+        <!-- Field 2: Applicant Full Name -->
         <div class="sm:col-span-1">
-          <label class="block text-xs font-medium text-muted">Applicant Full Name <span class="text-red-500">*</span></label>
-          <input type="text" id="name" required placeholder="Priya Kumar" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
+          <label class="block text-xs font-semibold text-slate-700">Applicant Full Name <span class="text-red-500">*</span></label>
+          <input type="text" id="name" required placeholder="Priya Kumar" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition text-xs">
         </div>
         
-        <!-- Loan Type -->
+        <!-- Field 3: Loan Product Category -->
         <div class="sm:col-span-1">
-          <label class="block text-xs font-medium text-muted">Select Loan Type <span class="text-red-500">*</span></label>
-          <select id="loanType" required class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
+          <label class="block text-xs font-semibold text-slate-700">Loan Product Category <span class="text-red-500">*</span></label>
+          <select id="loanType" required class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition text-xs">
             <option value="Personal">Personal Loan</option>
             <option value="Education">Education Loan</option>
             <option value="Auto">Auto Loan</option>
@@ -100,360 +107,991 @@
           </select>
         </div>
 
-        <!-- Dynamic Guest Fields Container -->
-        <div id="guestFields" class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Field Group: Identity Verification & Contact Data -->
+        <div id="applicantIdentityFields" class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-medium text-muted">PAN Card Number <span class="text-red-500">*</span></label>
-            <input type="text" id="pan" required placeholder="AZIDI0001I" pattern="[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}" title="10-character PAN format (e.g. ABCDE1234F)" oninput="this.value = this.value.toUpperCase()" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none uppercase transition">
+            <label class="block text-xs font-semibold text-slate-700">Registered Mobile Number <span class="text-red-500">*</span></label>
+            <input type="tel" id="mobile" required placeholder="9876543210" pattern="[6-9][0-9]{9}" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition text-xs">
           </div>
           <div>
-            <label class="block text-xs font-medium text-muted">Mobile Number <span class="text-red-500">*</span></label>
-            <input type="tel" id="mobile" required placeholder="9876543210" pattern="[6-9][0-9]{9}" title="Valid 10-digit Indian mobile number" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
+            <label class="block text-xs font-semibold text-slate-700">Date of Birth <span class="text-red-500">*</span></label>
+            <input type="date" id="dob" required class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition text-xs">
           </div>
-          <div>
-            <label class="block text-xs font-medium text-muted">Email Address <span class="text-red-500">*</span></label>
-            <input type="email" id="email" required placeholder="priya.kumar@example.com" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-muted">Date of Birth <span class="text-red-500">*</span></label>
-            <input type="date" id="dob" required class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-700">Email Address <span class="text-red-500">*</span></label>
+            <input type="email" id="email" required placeholder="priya.kumar@example.com" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition text-xs">
           </div>
         </div>
 
-        <!-- Dynamic Underwriter Direct CIBIL Score Field -->
-        <div id="underwriterFields" class="hidden sm:col-span-2">
-          <label class="block text-xs font-medium text-muted">CIBIL Score (300 - 900) <span class="text-red-500">*</span></label>
-          <input type="number" id="cibilScore" min="300" max="900" placeholder="750" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
-        </div>
-
-        <!-- Financial Parameters -->
+        <!-- Field Group: Financial Parameters (Amounts in INR) -->
         <div class="sm:col-span-1">
-          <label class="block text-xs font-medium text-muted">Gross Annual Income ($) <span class="text-red-500">*</span></label>
-          <input type="number" id="income" required placeholder="500000" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
+          <label class="block text-xs font-semibold text-slate-700">Gross Annual Income (₹) <span class="text-red-500">*</span></label>
+          <input type="number" id="income" required placeholder="500000" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition text-xs">
         </div>
         <div class="sm:col-span-1">
-          <label class="block text-xs font-medium text-muted">Monthly Debts ($) <span class="text-red-500">*</span></label>
-          <input type="number" id="monthlyDebts" required placeholder="15000" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
+          <label class="block text-xs font-semibold text-slate-700">Monthly Debts (₹) <span class="text-red-500">*</span></label>
+          <input type="number" id="monthlyDebts" required placeholder="15000" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition text-xs">
         </div>
 
-        <!-- Requested Loan Amount -->
         <div class="sm:col-span-2">
-          <label class="block text-xs font-medium text-muted">Requested Loan ($) <span class="text-red-500">*</span></label>
-          <input type="number" id="loanAmount" required placeholder="200000" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition">
+          <label class="block text-xs font-semibold text-slate-700">Requested Loan Principal (₹) <span class="text-red-500">*</span></label>
+          <input type="number" id="loanAmount" required placeholder="200000" class="input-bg w-full mt-1 p-2 border rounded-lg outline-none transition text-xs">
         </div>
 
         <!-- Consent Checkbox -->
         <div id="consentContainer" class="sm:col-span-2 pt-2 border-t border-subtle">
           <label class="flex items-start space-x-2 cursor-pointer text-xs text-muted">
-            <input type="checkbox" id="consentCheckbox" required class="mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
-            <span>I authorize Digi-Loan Gini to process my personal data for credit assessment and underwriting. <span class="text-red-500">*</span></span>
+            <input type="checkbox" id="consentCheckbox" required class="mt-0.5 rounded border-slate-300 text-teal-600 focus:ring-teal-500">
+            <span>I declare the supplied parameters accurate and authorize automated credit bureau inquiries. <span class="text-red-500">*</span></span>
           </label>
         </div>
 
-        <!-- Submit Button -->
-        <div class="sm:col-span-2">
-          <button type="submit" class="accent-bg text-white w-full font-semibold py-2 rounded-lg transition shadow">Submit Application</button>
+        <!-- Submit Action Button -->
+        <div class="sm:col-span-2 pt-2">
+          <button type="submit" class="accent-bg text-white w-full font-semibold py-2.5 rounded-lg transition shadow-md text-xs tracking-wider uppercase">Submit Application</button>
         </div>
       </form>
     </div>
 
-    <!-- Right Side Section -->
-    <div class="lg:col-span-2">
+    <!-- RIGHT SECTION: Dynamic Workspace Views & Matrices (Spans 8 Columns) -->
+    <div class="lg:col-span-8 space-y-4">
       
-      <!-- Guest View Container -->
-      <div id="guestWelcomeView" class="space-y-6">
-        
-        <!-- 1. Welcome to Digi-Loan Gini Guidelines Box -->
-        <div class="card-bg p-6 rounded-xl border shadow-lg space-y-6 transition-colors duration-300">
-          <div>
-            <h2 class="text-2xl font-bold accent-text">Welcome to Digi-Loan Gini 👋</h2>
-            <p class="text-sm text-muted mt-1">Fill out your application on the left. Once submitted, identity and eligibility checks will validate instantly below.</p>
-          </div>
+      <!-- ADMIN EXCLUSIVE TAB NAVIGATION BAR -->
+      <div id="adminTabNav" class="hidden flex flex-wrap items-center gap-2 border-b border-subtle pb-2">
+        <button id="tabBtnMatrix" onclick="switchAdminTab('matrix')" class="px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm bg-purple-700 text-white">📋 Decision Matrix</button>
+        <button id="tabBtnPan" onclick="switchAdminTab('pan')" class="px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm bg-slate-200 text-slate-700 hover:bg-slate-300">📊 PAN-Wise Applications</button>
+        <button id="tabBtnGuidelines" onclick="switchAdminTab('guidelines')" class="px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm bg-slate-200 text-slate-700 hover:bg-slate-300">📖 Guidelines & Formulas</button>
+        <button id="tabBtnDelete" onclick="switchAdminTab('delete')" class="px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm bg-rose-100 text-rose-800 border border-rose-300 hover:bg-rose-200">🗑️ Manage & Delete Records</button>
+      </div>
 
-          <div class="border-t border-subtle pt-4 space-y-3">
-            <h3 class="text-xs font-semibold uppercase tracking-wider accent-text">📌 Underwriting Guidelines & Verification Standard</h3>
-            
-            <ul class="space-y-2 text-xs text-muted list-disc list-inside">
-              <li><strong class="font-semibold text-slate-800">Mandatory Details:</strong> Name, valid 10-character Indian PAN, 10-digit Mobile Number, and DOB are required.</li>
-              <li><strong class="font-semibold text-slate-800">Age Qualification:</strong> Applicant must be at least <strong>21 years old</strong>.</li>
-              <li><strong class="font-semibold text-slate-800">Credit Score Rule:</strong> Minimum <strong>620+</strong> for Home/Auto loans and <strong>650+</strong> for Personal Loans.</li>
-              <li><strong class="font-semibold text-slate-800">FOIR Limit:</strong> Debt obligations must not exceed <strong>45% - 55%</strong> of net income.</li>
-            </ul>
+      <!-- VIEW 1: GUEST SUBMISSION SUMMARY RECEIPT -->
+      <div id="submittedSummaryCard" class="hidden card-bg p-6 rounded-xl border border-teal-200 shadow-md space-y-4 bg-teal-50/30">
+        <div class="flex justify-between items-center border-b border-teal-200 pb-3">
+          <div>
+            <h2 class="text-lg font-bold text-teal-900 flex items-center gap-2">
+              <span>🎉 Application Submission Receipt</span>
+            </h2>
+            <p class="text-xs text-teal-700">Your application has been evaluated by the automated underwriting engine.</p>
+          </div>
+          <button onclick="document.getElementById('submittedSummaryCard').classList.add('hidden')" class="text-xs text-slate-400 hover:text-slate-600 font-bold px-2 py-1">✕ Dismiss</button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+          <div class="p-3 bg-white rounded-lg border border-teal-100 space-y-1">
+            <span class="text-slate-500 block">Applicant Name</span>
+            <span id="sumName" class="font-bold text-slate-800 text-sm">-</span>
+          </div>
+          <div class="p-3 bg-white rounded-lg border border-teal-100 space-y-1">
+            <span class="text-slate-500 block">PAN Card Number</span>
+            <span id="sumPan" class="font-mono font-bold text-teal-800 text-sm">-</span>
+          </div>
+          <div class="p-3 bg-white rounded-lg border border-teal-100 space-y-1">
+            <span class="text-slate-500 block">Fetched CIBIL Score</span>
+            <span id="sumCibil" class="font-bold text-indigo-700 text-sm">-</span>
+          </div>
+          <div class="p-3 bg-white rounded-lg border border-teal-100 space-y-1">
+            <span class="text-slate-500 block">Loan Product</span>
+            <span id="sumType" class="font-semibold text-slate-800">-</span>
+          </div>
+          <div class="p-3 bg-white rounded-lg border border-teal-100 space-y-1">
+            <span class="text-slate-500 block">Requested Principal</span>
+            <span id="sumLoan" class="font-mono font-bold text-slate-800">-</span>
+          </div>
+          <div class="p-3 bg-white rounded-lg border border-teal-100 space-y-1">
+            <span class="text-slate-500 block">Underwriting Decision</span>
+            <span id="sumDecision" class="font-bold">-</span>
           </div>
         </div>
 
-        <!-- 2. Interactive Validation Status Box (Appears AFTER Welcome Section upon submission) -->
-        <div id="validationStatusCard" class="hidden card-bg p-6 rounded-xl border shadow-lg space-y-4 transition-all">
-          <div class="flex items-center justify-between border-b border-subtle pb-3">
-            <h3 class="text-lg font-bold" id="validationOverallHeader">Submission Status</h3>
-            <span id="validationOverallBadge" class="text-xs px-2.5 py-1 rounded-full font-semibold border">STATUS</span>
-          </div>
+        <div class="p-3 bg-white rounded-lg border border-teal-100 text-xs flex flex-col sm:flex-row justify-between items-start sm:items-center text-slate-600 gap-2">
+          <span>Contact Details: <strong id="sumContact" class="text-slate-800">-</strong></span>
+          <span>Annual Income: <strong id="sumIncome" class="text-slate-800 font-mono">-</strong></span>
+        </div>
+      </div>
 
-          <p class="text-xs text-muted" id="validationSummaryMessage"></p>
+      <!-- VIEW 2: GUEST WELCOME & INSTRUCTIONS -->
+      <div id="guestWelcomeView" class="card-bg p-6 rounded-xl border shadow-md space-y-4">
+        <div class="border-b border-subtle pb-3">
+          <h2 class="text-xl font-bold accent-text">Digital Credit Evaluation Overview 👋</h2>
+          <p class="text-xs text-muted mt-1">Submit applicant information via the entry form on the left to trigger instant CIBIL verification and algorithmic underwriting.</p>
+        </div>
+        
+        <div class="space-y-3 pt-2 text-xs text-muted">
+          <h3 class="font-semibold text-slate-800 uppercase tracking-wider text-[11px] accent-text">📌 Standard Policy Rules</h3>
+          <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-slate-600 list-disc list-inside">
+            <li><span class="font-semibold text-slate-800">Minimum Age Limit:</span> 21 Years</li>
+            <li><span class="font-semibold text-slate-800">Minimum CIBIL Score:</span> 620+ (Secured) / 650+ (Unsecured)</li>
+            <li><span class="font-semibold text-slate-800">Maximum Allowed FOIR:</span> 45% - 55% of Net Monthly Income</li>
+            <li><span class="font-semibold text-slate-800">Identity Verification:</span> Unique PAN & Mobile Match</li>
+          </ul>
+        </div>
 
-          <div class="space-y-2 text-xs">
-            <div class="flex items-center justify-between p-2.5 rounded bg-slate-50 border border-slate-200">
-              <span class="font-medium text-slate-700">Applicant Name</span>
-              <span id="valStatusName" class="font-semibold">Pending</span>
+        <div class="border-t border-subtle pt-4 space-y-1 text-xs text-muted">
+          <p class="font-semibold text-slate-700">🔒 System Access Restricted</p>
+          <p>The internal <strong>Underwriting Decision Matrix</strong> is reserved for authorized staff. Authenticate using <strong>Underwriter SSO</strong> or <strong>Admin SSO</strong> to review application queues.</p>
+        </div>
+      </div>
+
+      <!-- VIEW 3: STAFF UNDERWRITING DECISION MATRIX -->
+      <div id="underwriterDashboard" class="hidden card-bg p-6 rounded-xl border shadow-md transition-colors duration-300">
+        <div class="flex justify-between items-center mb-4 border-b border-subtle pb-3">
+          <div>
+            <h2 id="matrixTitle" class="text-lg font-bold accent-text">Underwriting Decision Matrix</h2>
+            <p class="text-xs text-muted">Real-time risk scoring repository and applicant evaluation matrix</p>
+          </div>
+          <button onclick="fetchReports()" class="text-xs accent-bg text-white px-3.5 py-2 rounded-lg shadow font-semibold hover:opacity-90 transition flex items-center gap-1.5">
+            <span>🔄</span> Refresh Decision Matrix
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-700 border-collapse">
+            <thead class="table-header uppercase border-b font-semibold whitespace-nowrap">
+              <tr>
+                <th class="p-3">ID</th>
+                <th class="p-3">PAN Card</th>
+                <th class="p-3">Applicant Name</th>
+                <th class="p-3">Product</th>
+                <th class="p-3">Annual Income</th>
+                <th class="p-3">Monthly Debts</th>
+                <th class="p-3">Requested Principal</th>
+                <th class="p-3">CIBIL</th>
+                <th class="p-3">Bank Risk Factor</th>
+                <th class="p-3">Score</th>
+                <th class="p-3">Underwriting Decision</th>
+                <th class="p-3 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody" class="divide-y divide-slate-200 whitespace-nowrap"></tbody>
+          </table>
+        </div>
+
+        <!-- Matrix Pagination Controls -->
+        <div id="matrixPagination" class="flex flex-col sm:flex-row justify-between items-center pt-4 border-t border-subtle mt-4 gap-2 text-xs">
+          <span id="matrixRecordCount" class="text-slate-500 font-medium">Showing 0-0 of 0 records</span>
+          <div id="matrixPageButtons" class="flex items-center space-x-1"></div>
+        </div>
+      </div>
+
+      <!-- VIEW 4: ADMIN PAN-WISE SUMMARY DASHBOARD -->
+      <div id="adminPanDashboard" class="hidden card-bg p-6 rounded-xl border shadow-md transition-colors duration-300">
+        <div class="flex justify-between items-center mb-4 border-b border-subtle pb-3">
+          <div>
+            <h2 class="text-lg font-bold accent-text">📊 PAN-Wise Application Aggregation</h2>
+            <p class="text-xs text-muted">Track application frequency, risk distribution, and historical submissions per PAN</p>
+          </div>
+          <div id="panStatsSummary" class="text-xs bg-purple-50 text-purple-800 border border-purple-200 px-3 py-1.5 rounded-lg font-bold">
+            Total Unique PANs: 0
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-700 border-collapse">
+            <thead class="table-header uppercase border-b font-semibold whitespace-nowrap">
+              <tr>
+                <th class="p-3">PAN Card Number</th>
+                <th class="p-3">Associated Applicant(s)</th>
+                <th class="p-3 text-center">Total Submissions</th>
+                <th class="p-3">Latest CIBIL Score</th>
+                <th class="p-3">Latest Decision</th>
+                <th class="p-3">Application IDs</th>
+              </tr>
+            </thead>
+            <tbody id="panTableBody" class="divide-y divide-slate-200 whitespace-nowrap">
+              <tr>
+                <td colspan="6" class="p-4 text-center text-slate-400">No PAN aggregated data available.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- PAN Summary Pagination Controls -->
+        <div id="panPagination" class="flex flex-col sm:flex-row justify-between items-center pt-4 border-t border-subtle mt-4 gap-2 text-xs">
+          <span id="panRecordCount" class="text-slate-500 font-medium">Showing 0-0 of 0 PAN entries</span>
+          <div id="panPageButtons" class="flex items-center space-x-1"></div>
+        </div>
+      </div>
+
+      <!-- VIEW 5: ADMIN DETAILED GUIDELINES -->
+      <div id="adminGuidelinesDashboard" class="hidden card-bg p-6 rounded-xl border shadow-md space-y-4 transition-colors duration-300">
+        
+        <!-- Guidelines Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-subtle pb-3 gap-2">
+          <div>
+            <h2 class="text-lg font-bold accent-text">📖 Underwriting Policy, Risk Models & Mathematical Formulas</h2>
+            <p class="text-xs text-muted mt-0.5">Comprehensive documentation of risk parameters, factor derivations, and scoring equations</p>
+          </div>
+          <div id="guidelinesPageBadge" class="text-xs font-bold bg-purple-100 text-purple-900 border border-purple-300 px-3 py-1 rounded-full whitespace-nowrap">
+            Section 1 of 4
+          </div>
+        </div>
+
+        <!-- GUIDELINES SUB-PAGE 1: CORE QUALIFICATION -->
+        <div id="guidePage1" class="space-y-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-purple-900 border-b border-purple-200 pb-1">Section 1: Mandatory Qualification Rules & Input Validation Bounds</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg space-y-1.5">
+              <span class="font-bold text-slate-800 text-xs">1.1 Age Qualification Equation:</span>
+              <p class="text-slate-600 leading-relaxed">The borrower's age is computed from input date of birth relative to current evaluation date:</p>
+              <div class="p-2 bg-white border font-mono text-[11px] rounded text-purple-900">
+                Age = (Date_current - DOB) / 365.25 &ge; 21
+              </div>
+              <p class="text-rose-600 font-semibold text-[11px]">Violation Result: Hard rejection logged (Age &lt; 21).</p>
             </div>
-            <div class="flex items-center justify-between p-2.5 rounded bg-slate-50 border border-slate-200">
-              <span class="font-medium text-slate-700">PAN Card Format</span>
-              <span id="valStatusPan" class="font-semibold">Pending</span>
+
+            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg space-y-1.5">
+              <span class="font-bold text-slate-800 text-xs">1.2 PAN Checksum Validation:</span>
+              <p class="text-slate-600 leading-relaxed">Primary identifier validation enforces the 10-character alphanumeric Indian PAN pattern:</p>
+              <div class="p-2 bg-white border font-mono text-[11px] rounded text-purple-900">
+                Pattern: ^[A-Z]{5}[0-9]{4}[A-Z]{1}$
+              </div>
+              <p class="text-slate-500 text-[11px]">Positions 1-3: Sequential, 4th: Holder Type ('P'=Individual), 5th: Name Initial.</p>
             </div>
-            <div class="flex items-center justify-between p-2.5 rounded bg-slate-50 border border-slate-200">
-              <span class="font-medium text-slate-700">Mobile Number Format</span>
-              <span id="valStatusMobile" class="font-semibold">Pending</span>
+
+            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg space-y-1.5">
+              <span class="font-bold text-slate-800 text-xs">1.3 Minimum CIBIL Score Thresholds:</span>
+              <p class="text-slate-600 leading-relaxed">Credit score bounds vary dynamically based on product collateralization:</p>
+              <ul class="list-disc list-inside space-y-1 text-slate-600">
+                <li><strong>Unsecured Loans (Personal / Business):</strong> Score &ge; 650</li>
+                <li><strong>Secured Loans (Home / Auto / Education):</strong> Score &ge; 620</li>
+              </ul>
             </div>
-            <div class="flex items-center justify-between p-2.5 rounded bg-slate-50 border border-slate-200">
-              <span class="font-medium text-slate-700">Age Verification (DOB ≥ 21 Yrs)</span>
-              <span id="valStatusDob" class="font-semibold">Pending</span>
-            </div>
-            <div class="flex items-center justify-between p-2.5 rounded bg-slate-50 border border-slate-200">
-              <span class="font-medium text-slate-700">Consent Agreement</span>
-              <span id="valStatusConsent" class="font-semibold">Agreed</span>
+
+            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-lg space-y-1.5">
+              <span class="font-bold text-slate-800 text-xs">1.4 Fixed Obligation to Income Ratio (FOIR):</span>
+              <p class="text-slate-600 leading-relaxed">Calculates total existing debt burden relative to monthly income:</p>
+              <div class="p-2 bg-white border font-mono text-[11px] rounded text-purple-900">
+                FOIR = Monthly Debts / (Annual Income / 12) &le; 0.50 (50%)
+              </div>
             </div>
           </div>
+        </div>
+
+        <!-- GUIDELINES SUB-PAGE 2: BANK RISK FACTOR MATRIX -->
+        <div id="guidePage2" class="hidden space-y-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-purple-900 border-b border-purple-200 pb-1">Section 2: Bank Risk Factor Coefficients & Asset Collateralization</h3>
+          <p class="text-xs text-slate-600">The Bank Risk Factor Coefficient acts as a penalty weight applied against loan collateral asset quality:</p>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700 border border-slate-200 rounded-lg">
+              <thead class="bg-slate-100 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="p-2.5">Loan Category</th>
+                  <th class="p-2.5">Underlying Collateral</th>
+                  <th class="p-2.5 text-center">Risk Factor</th>
+                  <th class="p-2.5">Risk Impact Rationale</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                <tr>
+                  <td class="p-2.5 font-bold">Home Loan</td>
+                  <td class="p-2.5">Real Estate Property Hypothecation</td>
+                  <td class="p-2.5 text-center font-mono font-bold text-emerald-700 bg-emerald-50">0.85x</td>
+                  <td class="p-2.5 text-slate-500">Lowest risk profile; backed by real estate assets.</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-bold">Education Loan</td>
+                  <td class="p-2.5">Future Earning Potential</td>
+                  <td class="p-2.5 text-center font-mono font-bold text-emerald-600 bg-emerald-50">1.00x</td>
+                  <td class="p-2.5 text-slate-500">Moderate risk; based on future placement potential.</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-bold">Auto Loan</td>
+                  <td class="p-2.5">Vehicle Hypothecation</td>
+                  <td class="p-2.5 text-center font-mono font-bold text-amber-600 bg-amber-50">1.10x</td>
+                  <td class="p-2.5 text-slate-500">Low-Moderate risk; secured by depreciating moveable assets.</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-bold">Small Business Loan</td>
+                  <td class="p-2.5">Unsecured Working Capital</td>
+                  <td class="p-2.5 text-center font-mono font-bold text-rose-600 bg-rose-50">1.25x</td>
+                  <td class="p-2.5 text-slate-500">High risk profile; subject to commercial cashflow fluctuations.</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-bold">Personal Loan</td>
+                  <td class="p-2.5">Unsecured (Nil Collateral)</td>
+                  <td class="p-2.5 text-center font-mono font-bold text-rose-700 bg-rose-50">1.35x</td>
+                  <td class="p-2.5 text-slate-500">Highest risk profile; zero physical collateral recovery mechanism.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- GUIDELINES SUB-PAGE 3: COMPOSITE SCORING MODEL -->
+        <div id="guidePage3" class="hidden space-y-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-purple-900 border-b border-purple-200 pb-1">Section 3: Composite Scoring Equation</h3>
+          
+          <div class="p-4 bg-purple-50 border border-purple-200 rounded-xl space-y-3">
+            <div class="text-xs font-bold text-purple-950">
+              Personal Loan Underwriting Score Formula:
+            </div>
+            
+            <div class="p-3 bg-white border border-purple-300 rounded-lg font-mono text-xs text-purple-900 shadow-sm overflow-x-auto">
+              Score = (CIBIL * 0.60) + ((1.0 / LTI) * 100.0) - (BankRiskFactor * 20.0)
+            </div>
+
+            <div class="p-3 bg-white border border-purple-200 rounded-lg space-y-1.5 text-xs">
+              <span class="font-bold text-slate-800">Calculation Example (INR ₹):</span>
+              <p class="text-slate-600 font-mono text-[11px]">
+                Input Parameters: Annual Income = ₹1,200,000 | Monthly Debts = ₹10,000 | Requested Principal = ₹200,000 | CIBIL Score = 750 | Selected Product = Personal Loan (Risk Factor = 1.35)<br><br>
+                1. LTI Ratio = 200,000 / 1,200,000 = 0.1667<br>
+                2. FOIR Ratio = (10,000 * 12) / 1,200,000 = 0.10 (10%)<br>
+                3. Raw Score = (750 * 0.6) + ((1.0 / 0.1667) * 100) - (1.35 * 20.0) = 450 + 600 - 27 = 1023.0<br>
+                4. Policy Checks: CIBIL &ge; 650 (PASS), FOIR &le; 0.50 (PASS), LTI &le; 4.0 (PASS) &rarr; <strong class="text-emerald-700">APPROVED</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- GUIDELINES SUB-PAGE 4: DECISION BOUNDARY MATRIX -->
+        <div id="guidePage4" class="hidden space-y-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-purple-900 border-b border-purple-200 pb-1">Section 4: Underwriting Decision Matrix & Action Boundaries</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            <div class="p-3.5 border border-emerald-300 bg-emerald-50 rounded-xl space-y-2">
+              <span class="font-bold text-emerald-900 text-sm flex items-center gap-1">✅ APPROVED</span>
+              <p class="text-emerald-800 leading-relaxed">
+                Zero policy violations recorded across CIBIL, FOIR, and LTI metrics.
+              </p>
+              <div class="p-2 bg-white rounded border border-emerald-200 text-[11px] text-emerald-900 font-medium">
+                Action: Instant digital sanction letter generation.
+              </div>
+            </div>
+
+            <div class="p-3.5 border border-amber-300 bg-amber-50 rounded-xl space-y-2">
+              <span class="font-bold text-amber-900 text-sm flex items-center gap-1">⚠️ CONDITIONALLY APPROVED</span>
+              <p class="text-amber-800 leading-relaxed">
+                Exactly one policy check failed, but applicant CIBIL score &ge; 620.
+              </p>
+              <div class="p-2 bg-white rounded border border-amber-200 text-[11px] text-amber-900 font-medium">
+                Action: Requires manual underwriter approval.
+              </div>
+            </div>
+
+            <div class="p-3.5 border border-rose-300 bg-rose-50 rounded-xl space-y-2">
+              <span class="font-bold text-rose-900 text-sm flex items-center gap-1">❌ REJECTED</span>
+              <p class="text-rose-800 leading-relaxed">
+                Multiple policy threshold failures or CIBIL score below minimum requirement.
+              </p>
+              <div class="p-2 bg-white rounded border border-rose-200 text-[11px] text-rose-900 font-medium">
+                Action: Application declined; rejection reasons appended.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Guidelines Pagination Controls Bar -->
+        <div class="flex justify-between items-center pt-4 border-t border-subtle mt-4 text-xs">
+          <button id="guideBtnPrev" onclick="navigateGuidePage(-1)" class="px-3 py-1.5 rounded border font-semibold bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition">
+            ◀ Previous Section
+          </button>
+          
+          <div id="guidePageNumbers" class="flex items-center space-x-1"></div>
+
+          <button id="guideBtnNext" onclick="navigateGuidePage(1)" class="px-3 py-1.5 rounded border font-semibold bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition">
+            Next Section ▶
+          </button>
         </div>
 
       </div>
 
-      <!-- Staff Dashboard View (Hidden for Guest) -->
-      <div id="underwriterDashboard" class="hidden card-bg p-6 rounded-xl border shadow-lg transition-colors duration-300">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-lg font-semibold accent-text">Underwriting Decision Matrix</h2>
-          <button onclick="fetchReports()" class="text-xs nav-bg hover:opacity-80 px-3 py-1 rounded border shadow-sm">🔄 Refresh Data</button>
+      <!-- VIEW 6: ADMIN PERMANENT DATABASE RECORD DELETION TAB -->
+      <div id="adminDeleteDashboard" class="hidden card-bg p-6 rounded-xl border border-rose-200 shadow-md space-y-4 transition-colors duration-300 bg-rose-50/20">
+        <div class="flex justify-between items-center border-b border-rose-200 pb-3">
+          <div>
+            <h2 class="text-lg font-bold text-rose-900 flex items-center gap-2">
+              <span>🗑️ Permanent Record Purge & Database Management</span>
+            </h2>
+            <p class="text-xs text-rose-700">Permanently delete application entries from the database queue. Warning: This action cannot be undone.</p>
+          </div>
+          <span class="text-xs font-bold text-rose-800 bg-rose-100 border border-rose-300 px-3 py-1 rounded-full">
+            Admin Privileged Zone
+          </span>
         </div>
 
         <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm text-slate-700">
-            <thead class="table-header text-xs uppercase border-b">
+          <table class="w-full text-left text-xs text-slate-700 border-collapse">
+            <thead class="bg-rose-100/60 uppercase border-b border-rose-200 font-semibold text-rose-950 whitespace-nowrap">
               <tr>
                 <th class="p-3">ID</th>
-                <th class="p-3">Applicant</th>
-                <th class="p-3">Type</th>
-                <th class="p-3">CIBIL</th>
-                <th class="p-3">Risk Factor</th>
-                <th class="p-3">Score</th>
+                <th class="p-3">PAN Card Number</th>
+                <th class="p-3">Applicant Name</th>
+                <th class="p-3">Loan Amount (₹)</th>
                 <th class="p-3">Decision</th>
-                <th class="p-3">Action</th>
+                <th class="p-3 text-center">Permanent Action</th>
               </tr>
             </thead>
-            <tbody id="tableBody" class="divide-y divide-slate-200"></tbody>
+            <tbody id="deleteTableBody" class="divide-y divide-rose-100 bg-white whitespace-nowrap">
+              <tr>
+                <td colspan="6" class="p-4 text-center text-slate-400">No records loaded for deletion queue.</td>
+              </tr>
+            </tbody>
           </table>
+        </div>
+
+        <!-- Delete Dashboard Pagination Controls -->
+        <div id="deletePagination" class="flex flex-col sm:flex-row justify-between items-center pt-4 border-t border-rose-200 mt-4 gap-2 text-xs">
+          <span id="deleteRecordCount" class="text-slate-500 font-medium">Showing 0-0 of 0 records</span>
+          <div id="deletePageButtons" class="flex items-center space-x-1"></div>
         </div>
       </div>
 
     </div>
   </main>
 
+  <!-- JAVASCRIPT APPLICATION LOGIC & STATE MANAGEMENT -->
   <script>
+    /* Global Application State Variables */
     let currentToken = "";
     let currentRole = "guest";
+    let cachedReportsData = [];
 
+    /* Table Pagination Limits (10 items per page) */
+    const ITEMS_PER_PAGE = 10;
+    let currentMatrixPage = 1;
+    let currentPanPage = 1;
+    let currentDeletePage = 1;
+
+    /* Guidelines Tab Sub-Page State (4 pages total) */
+    let currentGuidePage = 1;
+    const TOTAL_GUIDE_PAGES = 4;
+
+    /* Dynamic Page Titles per Role */
+    const portalTitles = {
+      guest: "Digital Loan Portal",
+      underwriter: "Digital Loan Application Risk Calculation Portal",
+      admin: "Digital Loan Application Risk Calculation and Approval Portal"
+    };
+
+    /* Initialize Application on DOM Load */
     document.addEventListener("DOMContentLoaded", () => {
       loginSSO('guest');
     });
 
+    /**
+     * Single Sign-On (SSO) Role Authentication Switcher
+     */
     function loginSSO(role) {
       currentRole = role;
+      
+      const titleText = portalTitles[role];
+      document.getElementById("pageTitle").innerText = titleText;
+      document.getElementById("portalHeader").innerText = `🏦 ${titleText}`;
+      
       document.body.className = `theme-${role} min-h-screen font-sans transition-colors duration-300`;
       document.getElementById("roleBadge").innerText = `Role: ${role.toUpperCase()}`;
 
-      const guestInputIds = ['pan', 'mobile', 'email', 'dob', 'consentCheckbox'];
-      const cibilInput = document.getElementById('cibilScore');
-
       ['guest', 'underwriter', 'admin'].forEach(r => {
         const btn = document.getElementById(`btn${r.charAt(0).toUpperCase() + r.slice(1)}`);
-        if (r === role) {
-          btn.className = "accent-bg text-white px-3 py-1 rounded border-transparent font-semibold shadow";
-        } else {
-          btn.className = "nav-bg hover:opacity-80 px-3 py-1 rounded border border-slate-300 text-slate-600";
+        if (btn) {
+          if (r === role) {
+            btn.className = "accent-bg text-white px-3 py-1.5 rounded border-transparent font-semibold shadow-sm";
+          } else {
+            btn.className = "nav-bg hover:opacity-80 px-3 py-1.5 rounded border border-slate-300 text-slate-600";
+          }
         }
       });
 
       if (role === 'guest') {
         currentToken = "Bearer USER_MOCK_JWT_TOKEN";
-        
-        guestInputIds.forEach(id => document.getElementById(id).setAttribute('required', 'true'));
-        cibilInput.removeAttribute('required');
-
-        document.getElementById("guestFields").classList.remove("hidden");
-        document.getElementById("consentContainer").classList.remove("hidden");
-        document.getElementById("underwriterFields").classList.add("hidden");
         document.getElementById("guestWelcomeView").classList.remove("hidden");
         document.getElementById("underwriterDashboard").classList.add("hidden");
-      } else {
-        currentToken = role === 'admin' ? "Bearer ADMIN_MOCK_JWT_TOKEN" : "Bearer USER_MOCK_JWT_TOKEN";
-        
-        guestInputIds.forEach(id => document.getElementById(id).removeAttribute('required'));
-        cibilInput.setAttribute('required', 'true');
-
-        document.getElementById("guestFields").classList.add("hidden");
-        document.getElementById("consentContainer").classList.add("hidden");
-        document.getElementById("underwriterFields").classList.remove("hidden");
+        document.getElementById("adminPanDashboard").classList.add("hidden");
+        document.getElementById("adminGuidelinesDashboard").classList.add("hidden");
+        document.getElementById("adminDeleteDashboard").classList.add("hidden");
+        document.getElementById("adminTabNav").classList.add("hidden");
+      } else if (role === 'underwriter') {
+        currentToken = "Bearer STAFF_MOCK_JWT_TOKEN";
         document.getElementById("guestWelcomeView").classList.add("hidden");
+        document.getElementById("submittedSummaryCard").classList.add("hidden");
         document.getElementById("underwriterDashboard").classList.remove("hidden");
-        
+        document.getElementById("adminPanDashboard").classList.add("hidden");
+        document.getElementById("adminGuidelinesDashboard").classList.add("hidden");
+        document.getElementById("adminDeleteDashboard").classList.add("hidden");
+        document.getElementById("adminTabNav").classList.add("hidden");
+        fetchReports();
+      } else if (role === 'admin') {
+        currentToken = "Bearer ADMIN_MOCK_JWT_TOKEN";
+        document.getElementById("guestWelcomeView").classList.add("hidden");
+        document.getElementById("submittedSummaryCard").classList.add("hidden");
+        document.getElementById("underwriterDashboard").classList.remove("hidden");
+        document.getElementById("adminPanDashboard").classList.add("hidden");
+        document.getElementById("adminGuidelinesDashboard").classList.add("hidden");
+        document.getElementById("adminDeleteDashboard").classList.add("hidden");
+        document.getElementById("adminTabNav").classList.remove("hidden");
+        switchAdminTab('matrix');
         fetchReports();
       }
     }
 
-    function calculateAge(dobString) {
-      if (!dobString) return 0;
-      const birthDate = new Date(dobString);
-      const today = new Date();
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const m = today.getMonth() - birthDate.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
-      return age;
+    /**
+     * Switches workspace views among Admin exclusive tabs
+     */
+    function switchAdminTab(tab) {
+      const btnMatrix = document.getElementById("tabBtnMatrix");
+      const btnPan = document.getElementById("tabBtnPan");
+      const btnGuidelines = document.getElementById("tabBtnGuidelines");
+      const btnDelete = document.getElementById("tabBtnDelete");
+
+      const matrixView = document.getElementById("underwriterDashboard");
+      const panView = document.getElementById("adminPanDashboard");
+      const guidelinesView = document.getElementById("adminGuidelinesDashboard");
+      const deleteView = document.getElementById("adminDeleteDashboard");
+
+      btnMatrix.className = "px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm bg-slate-200 text-slate-700 hover:bg-slate-300";
+      btnPan.className = "px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm bg-slate-200 text-slate-700 hover:bg-slate-300";
+      btnGuidelines.className = "px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm bg-slate-200 text-slate-700 hover:bg-slate-300";
+      btnDelete.className = "px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm bg-rose-100 text-rose-800 border border-rose-300 hover:bg-rose-200";
+
+      matrixView.classList.add("hidden");
+      panView.classList.add("hidden");
+      guidelinesView.classList.add("hidden");
+      deleteView.classList.add("hidden");
+
+      if (tab === 'matrix') {
+        btnMatrix.className = "px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm bg-purple-700 text-white";
+        matrixView.classList.remove("hidden");
+      } else if (tab === 'pan') {
+        btnPan.className = "px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm bg-purple-700 text-white";
+        panView.classList.remove("hidden");
+        renderPanSummary();
+      } else if (tab === 'guidelines') {
+        btnGuidelines.className = "px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm bg-purple-700 text-white";
+        guidelinesView.classList.remove("hidden");
+        renderGuidelinesPage(currentGuidePage);
+      } else if (tab === 'delete') {
+        btnDelete.className = "px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm bg-rose-700 text-white";
+        deleteView.classList.remove("hidden");
+        renderDeleteTable();
+      }
     }
 
-    document.getElementById("loanForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+    function navigateGuidePage(direction) {
+      const newPage = currentGuidePage + direction;
+      if (newPage >= 1 && newPage <= TOTAL_GUIDE_PAGES) {
+        currentGuidePage = newPage;
+        renderGuidelinesPage(currentGuidePage);
+      }
+    }
 
-      if (currentRole === 'guest') {
-        const nameVal = document.getElementById("name").value.trim();
-        const panVal = document.getElementById("pan").value.trim();
-        const mobileVal = document.getElementById("mobile").value.trim();
-        const dobVal = document.getElementById("dob").value;
-        const consentVal = document.getElementById("consentCheckbox").checked;
-
-        const isNameValid = nameVal.length >= 2;
-        const isPanValid = /^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$/.test(panVal);
-        const isMobileValid = /^[6-9][0-9]{9}$/.test(mobileVal);
-        const age = calculateAge(dobVal);
-        const isDobValid = age >= 21;
-
-        const allValid = isNameValid && isPanValid && isMobileValid && isDobValid && consentVal;
-
-        const statusCard = document.getElementById("validationStatusCard");
-        statusCard.classList.remove("hidden");
-
-        document.getElementById("valStatusName").innerHTML = isNameValid 
-          ? `<span class="text-emerald-700 font-bold">✓ Validated</span>` 
-          : `<span class="text-rose-600 font-bold">✗ Invalid Name</span>`;
-
-        document.getElementById("valStatusPan").innerHTML = isPanValid 
-          ? `<span class="text-emerald-700 font-bold">✓ Validated (${panVal})</span>` 
-          : `<span class="text-rose-600 font-bold">✗ Invalid Format</span>`;
-
-        document.getElementById("valStatusMobile").innerHTML = isMobileValid 
-          ? `<span class="text-emerald-700 font-bold">✓ Validated (${mobileVal})</span>` 
-          : `<span class="text-rose-600 font-bold">✗ Invalid Number</span>`;
-
-        document.getElementById("valStatusDob").innerHTML = isDobValid 
-          ? `<span class="text-emerald-700 font-bold">✓ Validated (${age} Yrs)</span>` 
-          : `<span class="text-rose-600 font-bold">✗ Underage (${age} Yrs)</span>`;
-
-        document.getElementById("valStatusConsent").innerHTML = consentVal 
-          ? `<span class="text-emerald-700 font-bold">✓ Agreed</span>` 
-          : `<span class="text-rose-600 font-bold">✗ Consent Required</span>`;
-
-        const overallHeader = document.getElementById("validationOverallHeader");
-        const overallBadge = document.getElementById("validationOverallBadge");
-        const overallSummary = document.getElementById("validationSummaryMessage");
-
-        if (allValid) {
-          overallHeader.innerText = "Application Validation Successful!";
-          overallHeader.className = "text-lg font-bold text-emerald-800";
-          overallBadge.innerText = "SUCCESS";
-          overallBadge.className = "text-xs px-2.5 py-1 rounded-full font-semibold border bg-emerald-100 text-emerald-800 border-emerald-300";
-          overallSummary.innerText = "Applicant Full Name, PAN Card Number, Mobile Number, and Date of Birth have been validated successfully.";
-        } else {
-          overallHeader.innerText = "Validation Check Failed!";
-          overallHeader.className = "text-lg font-bold text-rose-700";
-          overallBadge.innerText = "ACTION REQUIRED";
-          overallBadge.className = "text-xs px-2.5 py-1 rounded-full font-semibold border bg-rose-100 text-rose-800 border-rose-300";
-          overallSummary.innerText = "One or more mandatory identity checks failed. Please correct the highlighted fields on the left.";
-          return;
+    function renderGuidelinesPage(pageNum) {
+      for (let i = 1; i <= TOTAL_GUIDE_PAGES; i++) {
+        const pageElem = document.getElementById(`guidePage${i}`);
+        if (pageElem) {
+          if (i === pageNum) pageElem.classList.remove("hidden");
+          else pageElem.classList.add("hidden");
         }
       }
 
-      let scoreVal = 700;
-      if (currentRole !== 'guest') {
-        scoreVal = parseInt(document.getElementById("cibilScore").value) || 700;
+      document.getElementById("guidelinesPageBadge").innerText = `Section ${pageNum} of ${TOTAL_GUIDE_PAGES}`;
+      document.getElementById("guideBtnPrev").disabled = (pageNum === 1);
+      document.getElementById("guideBtnNext").disabled = (pageNum === TOTAL_GUIDE_PAGES);
+
+      const numContainer = document.getElementById("guidePageNumbers");
+      numContainer.innerHTML = "";
+      for (let i = 1; i <= TOTAL_GUIDE_PAGES; i++) {
+        const btn = document.createElement("button");
+        btn.innerText = i;
+        if (i === pageNum) {
+          btn.className = "px-2.5 py-1 rounded font-bold text-xs bg-purple-700 text-white shadow-sm";
+        } else {
+          btn.className = "px-2.5 py-1 rounded border font-semibold text-xs bg-white text-slate-700 hover:bg-slate-100";
+        }
+        btn.onclick = () => {
+          currentGuidePage = i;
+          renderGuidelinesPage(i);
+        };
+        numContainer.appendChild(btn);
       }
+    }
+
+    /**
+     * Loan Application Form Submission Handler
+     */
+    document.getElementById("loanForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const panVal = document.getElementById("pan").value.trim();
+      const nameVal = document.getElementById("name").value.trim();
+      const loanTypeVal = document.getElementById("loanType").value;
+      const mobileVal = document.getElementById("mobile").value.trim();
+      const dobVal = document.getElementById("dob").value;
+      const emailVal = document.getElementById("email").value.trim();
+      const incomeVal = parseFloat(document.getElementById("income").value);
+      const monthlyDebtsVal = parseFloat(document.getElementById("monthlyDebts").value);
+      const loanAmountVal = parseFloat(document.getElementById("loanAmount").value);
 
       const payload = {
-        name: document.getElementById("name").value,
-        loanType: document.getElementById("loanType").value,
-        cibilScore: scoreVal,
-        income: parseFloat(document.getElementById("income").value),
-        monthlyDebts: parseFloat(document.getElementById("monthlyDebts").value),
-        loanAmount: parseFloat(document.getElementById("loanAmount").value)
+        pan: panVal,
+        name: nameVal,
+        loanType: loanTypeVal,
+        mobile: mobileVal,
+        dob: dobVal,
+        email: emailVal,
+        income: incomeVal,
+        monthlyDebts: monthlyDebtsVal,
+        loanAmount: loanAmountVal
       };
 
-      const res = await fetch("/api/applicant", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": currentToken 
-        },
-        body: JSON.stringify(payload)
-      });
+      try {
+        const apiUrl = window.location.port === "" ? "/api/applicant" : "http://localhost:18080/api/applicant";
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": currentToken 
+          },
+          body: JSON.stringify(payload)
+        });
 
-      if (res.ok) {
-        document.getElementById("loanForm").reset();
-        if (currentRole !== 'guest') fetchReports();
-      } else {
-        alert("Failed to save application to server.");
+        if (res.ok) {
+          const responseData = await res.json();
+          
+          document.getElementById("sumName").innerText = nameVal;
+          document.getElementById("sumPan").innerText = responseData.pan || panVal;
+          document.getElementById("sumCibil").innerText = responseData.fetchedCibilScore || "777";
+          document.getElementById("sumType").innerText = loanTypeVal;
+          document.getElementById("sumLoan").innerText = `₹${loanAmountVal.toLocaleString('en-IN')}`;
+          document.getElementById("sumContact").innerText = `${mobileVal} | ${emailVal}`;
+          document.getElementById("sumIncome").innerText = `₹${incomeVal.toLocaleString('en-IN')}`;
+
+          const decisionElem = document.getElementById("sumDecision");
+          decisionElem.innerText = responseData.decision || "PROCESSING";
+          
+          if ((responseData.decision || "").includes("APPROVED")) {
+            decisionElem.className = "font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300";
+          } else if ((responseData.decision || "").includes("CONDITIONAL")) {
+            decisionElem.className = "font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded border border-amber-300";
+          } else {
+            decisionElem.className = "font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded border border-rose-300";
+          }
+
+          document.getElementById("submittedSummaryCard").classList.remove("hidden");
+          document.getElementById("loanForm").reset();
+          if (currentRole !== 'guest') fetchReports();
+        } else {
+          alert("Failed to record application. Please verify server connection.");
+        }
+      } catch (err) {
+        console.error("Submission Error:", err);
+        alert("Error connecting to DigiLoanServer at http://localhost:18080");
       }
     });
 
+    /**
+     * Fetches all applicant reports from backend database
+     */
     async function fetchReports() {
       if (currentRole === 'guest') return;
 
-      const res = await fetch("/api/reports", {
-        headers: { "Authorization": currentToken }
-      });
+      try {
+        const apiUrl = window.location.port === "" ? "/api/reports" : "http://localhost:18080/api/reports";
+        const res = await fetch(apiUrl, {
+          headers: { "Authorization": currentToken }
+        });
 
-      if (!res.ok) return alert("SSO Session invalid!");
+        if (res.status === 403) {
+          alert("Access Denied: Guests cannot view the underwriting matrix.");
+          return;
+        }
 
-      const data = await res.json();
+        if (!res.ok) throw new Error("Failed to load records from server.");
+
+        const responseData = await res.json();
+        
+        // Safely unwrap data array whether server sends raw [] or { data: [] }
+        if (Array.isArray(responseData)) {
+          cachedReportsData = responseData;
+        } else if (responseData && Array.isArray(responseData.data)) {
+          cachedReportsData = responseData.data;
+        } else {
+          cachedReportsData = [];
+        }
+
+        currentMatrixPage = 1;
+        currentPanPage = 1;
+        currentDeletePage = 1;
+        
+        renderMatrixTable();
+
+        if (currentRole === 'admin') {
+          renderPanSummary();
+          renderDeleteTable();
+        }
+      } catch (err) {
+        console.error("Error retrieving decision matrix data:", err);
+      }
+    }
+
+    /**
+     * Renders Decision Matrix Table with 10 records per page limit
+     */
+    function renderMatrixTable() {
       const tbody = document.getElementById("tableBody");
+      if (!tbody) return;
       tbody.innerHTML = "";
 
-      data.forEach(item => {
-        let badge = "bg-emerald-100 text-emerald-800 border-emerald-300";
-        if (item.decision.includes("CONDITIONAL")) badge = "bg-amber-100 text-amber-800 border-amber-300";
-        if (item.decision.includes("REJECTED")) badge = "bg-rose-100 text-rose-800 border-rose-300";
+      if (!cachedReportsData || cachedReportsData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="12" class="p-4 text-center text-slate-400">No application records found in database.</td></tr>`;
+        const countElem = document.getElementById("matrixRecordCount");
+        if (countElem) countElem.innerText = "Showing 0-0 of 0 records";
+        const buttonsElem = document.getElementById("matrixPageButtons");
+        if (buttonsElem) buttonsElem.innerHTML = "";
+        return;
+      }
 
-        let rejections = item.rejectionReasons.length ? `<div class="text-[10px] text-rose-600 mt-0.5">${item.rejectionReasons.join(", ")}</div>` : '';
+      const totalItems = cachedReportsData.length;
+      const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+      if (currentMatrixPage > totalPages) currentMatrixPage = totalPages;
+
+      const startIndex = (currentMatrixPage - 1) * ITEMS_PER_PAGE;
+      const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
+      const pageData = cachedReportsData.slice(startIndex, endIndex);
+
+      pageData.forEach(item => {
+        let badge = "bg-emerald-100 text-emerald-800 border-emerald-300";
+        if ((item.decision || "").includes("CONDITIONAL")) badge = "bg-amber-100 text-amber-800 border-amber-300";
+        if ((item.decision || "").includes("REJECTED")) badge = "bg-rose-100 text-rose-800 border-rose-300";
+
+        let rejections = (item.rejectionReasons && item.rejectionReasons.length) 
+          ? `<div class="text-[10px] text-rose-600 mt-0.5">${item.rejectionReasons.join(", ")}</div>` 
+          : '';
 
         let adminAction = currentRole === 'admin' 
-          ? `<button onclick="overrideDecision(${item.id})" class="text-xs bg-purple-700 hover:bg-purple-600 text-white px-2 py-0.5 rounded shadow">Override</button>` 
-          : `<span class="text-xs text-slate-400">Read-Only</span>`;
+          ? `<button onclick="overrideDecision(${item.id})" class="text-xs bg-purple-700 hover:bg-purple-600 text-white px-2.5 py-1 rounded shadow-sm font-medium">Override Decision</button>` 
+          : `<span class="text-xs text-slate-400 font-medium">Read-Only</span>`;
+
+        const displayPan = item.pan || item.panNumber || item.panCard || 'N/A';
 
         tbody.innerHTML += `
           <tr class="table-row transition">
             <td class="p-3 font-mono text-slate-500">#${item.id}</td>
-            <td class="p-3 font-medium text-slate-800">${item.name}</td>
-            <td class="p-3"><span class="text-xs pill-badge border px-2 py-0.5 rounded font-medium">${item.loanType}</span></td>
-            <td class="p-3 font-semibold text-slate-700">${item.cibilScore}</td>
-            <td class="p-3 font-mono text-amber-700 font-semibold">${item.bankRiskFactor.toFixed(2)}x</td>
-            <td class="p-3 font-bold accent-text">${item.score.toFixed(1)}</td>
+            <td class="p-3 font-mono font-bold text-purple-900">${displayPan}</td>
+            <td class="p-3 font-medium text-slate-800">${item.name || 'N/A'}</td>
+            <td class="p-3"><span class="text-[11px] pill-badge border px-2 py-0.5 rounded font-medium">${item.loanType || 'Personal'}</span></td>
+            <td class="p-3 font-mono">₹${item.income ? item.income.toLocaleString('en-IN') : '0'}</td>
+            <td class="p-3 font-mono">₹${item.monthlyDebts ? item.monthlyDebts.toLocaleString('en-IN') : '0'}</td>
+            <td class="p-3 font-mono">₹${item.requestedLoan ? item.requestedLoan.toLocaleString('en-IN') : '0'}</td>
+            <td class="p-3 font-semibold text-slate-700">${item.cibilScore || 0}</td>
+            <td class="p-3 font-mono text-amber-700 font-semibold">${item.bankRiskFactor ? item.bankRiskFactor.toFixed(2) : '1.00'}x</td>
+            <td class="p-3 font-bold accent-text">${item.score ? item.score.toFixed(1) : '0.0'}</td>
             <td class="p-3">
-              <span class="px-2 py-0.5 text-xs rounded-full border ${badge}">${item.decision}</span>
+              <span class="px-2.5 py-0.5 text-[11px] rounded-full border font-semibold ${badge}">${item.decision || 'PROCESSING'}</span>
               ${rejections}
             </td>
-            <td class="p-3">${adminAction}</td>
+            <td class="p-3 text-center">${adminAction}</td>
           </tr>
         `;
       });
+
+      const countElem = document.getElementById("matrixRecordCount");
+      if (countElem) countElem.innerText = `Showing ${startIndex + 1}-${endIndex} of ${totalItems} records`;
+      renderPaginationControls("matrixPageButtons", currentMatrixPage, totalPages, (p) => {
+        currentMatrixPage = p;
+        renderMatrixTable();
+      });
+    }
+
+    /**
+     * Renders Admin PAN-Wise Summary Table
+     */
+    function renderPanSummary() {
+      const panTbody = document.getElementById("panTableBody");
+      if (!panTbody) return;
+      panTbody.innerHTML = "";
+
+      if (!cachedReportsData || cachedReportsData.length === 0) {
+        panTbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No stored records available to aggregate by PAN.</td></tr>`;
+        const countElem = document.getElementById("panRecordCount");
+        if (countElem) countElem.innerText = "Showing 0-0 of 0 PAN entries";
+        return;
+      }
+
+      const panGroups = {};
+      cachedReportsData.forEach(item => {
+        const key = item.pan || item.panNumber || item.panCard || item.name || 'UNKNOWN';
+        if (!panGroups[key]) {
+          panGroups[key] = {
+            pan: key,
+            names: new Set(),
+            count: 0,
+            latestCibil: item.cibilScore || 0,
+            latestDecision: item.decision || 'N/A',
+            ids: []
+          };
+        }
+        if (item.name) panGroups[key].names.add(item.name);
+        panGroups[key].count++;
+        panGroups[key].ids.push(`#${item.id}`);
+      });
+
+      const uniquePanList = Object.values(panGroups);
+      const totalItems = uniquePanList.length;
+      
+      const statsElem = document.getElementById("panStatsSummary");
+      if (statsElem) statsElem.innerText = `Total Unique Submissions: ${totalItems}`;
+
+      const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+      if (currentPanPage > totalPages) currentPanPage = totalPages;
+
+      const startIndex = (currentPanPage - 1) * ITEMS_PER_PAGE;
+      const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
+      const pageData = uniquePanList.slice(startIndex, endIndex);
+
+      pageData.forEach(group => {
+        let badge = "bg-emerald-100 text-emerald-800 border-emerald-300";
+        if (group.latestDecision.includes("CONDITIONAL")) badge = "bg-amber-100 text-amber-800 border-amber-300";
+        if (group.latestDecision.includes("REJECTED")) badge = "bg-rose-100 text-rose-800 border-rose-300";
+
+        panTbody.innerHTML += `
+          <tr class="table-row transition">
+            <td class="p-3 font-mono font-bold text-purple-900">${group.pan}</td>
+            <td class="p-3 font-medium text-slate-800">${Array.from(group.names).join(", ") || 'N/A'}</td>
+            <td class="p-3 text-center"><span class="px-2.5 py-1 bg-purple-100 text-purple-800 border border-purple-300 rounded-full font-bold text-xs">${group.count}</span></td>
+            <td class="p-3 font-semibold text-slate-700">${group.latestCibil}</td>
+            <td class="p-3"><span class="px-2.5 py-0.5 text-[11px] rounded-full border font-semibold ${badge}">${group.latestDecision}</span></td>
+            <td class="p-3 font-mono text-slate-500 text-xs">${group.ids.join(", ")}</td>
+          </tr>
+        `;
+      });
+
+      const countElem = document.getElementById("panRecordCount");
+      if (countElem) countElem.innerText = `Showing ${startIndex + 1}-${endIndex} of ${totalItems} PAN entries`;
+      renderPaginationControls("panPageButtons", currentPanPage, totalPages, (p) => {
+        currentPanPage = p;
+        renderPanSummary();
+      });
+    }
+
+    /**
+     * Renders Record Deletion Table for Admin Privileged Role
+     */
+    function renderDeleteTable() {
+      const delTbody = document.getElementById("deleteTableBody");
+      if (!delTbody) return;
+      delTbody.innerHTML = "";
+
+      if (!cachedReportsData || cachedReportsData.length === 0) {
+        delTbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No active records stored in database to purge.</td></tr>`;
+        const countElem = document.getElementById("deleteRecordCount");
+        if (countElem) countElem.innerText = "Showing 0-0 of 0 records";
+        return;
+      }
+
+      const totalItems = cachedReportsData.length;
+      const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+      if (currentDeletePage > totalPages) currentDeletePage = totalPages;
+
+      const startIndex = (currentDeletePage - 1) * ITEMS_PER_PAGE;
+      const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
+      const pageData = cachedReportsData.slice(startIndex, endIndex);
+
+      pageData.forEach(item => {
+        const displayPan = item.pan || item.panNumber || item.panCard || 'N/A';
+        delTbody.innerHTML += `
+          <tr class="table-row hover:bg-rose-50/50 transition">
+            <td class="p-3 font-mono text-slate-500">#${item.id}</td>
+            <td class="p-3 font-mono font-bold text-purple-900">${displayPan}</td>
+            <td class="p-3 font-medium text-slate-800">${item.name || 'N/A'}</td>
+            <td class="p-3 font-mono">₹${item.requestedLoan ? item.requestedLoan.toLocaleString('en-IN') : '0'}</td>
+            <td class="p-3 font-semibold text-xs">${item.decision || 'N/A'}</td>
+            <td class="p-3 text-center">
+              <button onclick="confirmDeleteRecord(${item.id}, '${item.name || ''}')" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1 rounded text-xs shadow-sm transition">
+                🗑️ Permanently Delete
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      const countElem = document.getElementById("deleteRecordCount");
+      if (countElem) countElem.innerText = `Showing ${startIndex + 1}-${endIndex} of ${totalItems} records`;
+      renderPaginationControls("deletePageButtons", currentDeletePage, totalPages, (p) => {
+        currentDeletePage = p;
+        renderDeleteTable();
+      });
+    }
+
+    async function confirmDeleteRecord(id, name) {
+      if (!confirm(`Are you sure you want to PERMANENTLY DELETE Application #${id} (${name}) from the database? This action CANNOT be undone.`)) {
+        return;
+      }
+
+      try {
+        const apiUrl = window.location.port === "" ? "/api/admin/delete" : "http://localhost:18080/api/admin/delete";
+        const res = await fetch(apiUrl, {
+          method: "DELETE",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": currentToken 
+          },
+          body: JSON.stringify({ id: id })
+        });
+
+        if (res.ok) {
+          alert(`Application #${id} deleted permanently.`);
+          fetchReports();
+        } else {
+          alert("Delete failed: Unauthorized or invalid record ID.");
+        }
+      } catch (err) {
+        console.error("Error purging record:", err);
+      }
+    }
+
+    function renderPaginationControls(containerId, currentPage, totalPages, onPageChange) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = "";
+
+      if (totalPages <= 1) return;
+
+      const prevBtn = document.createElement("button");
+      prevBtn.className = `px-2.5 py-1 rounded border font-semibold text-xs transition ${currentPage === 1 ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700'}`;
+      prevBtn.innerText = "◀ Prev";
+      prevBtn.disabled = currentPage === 1;
+      prevBtn.onclick = () => onPageChange(currentPage - 1);
+      container.appendChild(prevBtn);
+
+      for (let i = 1; i <= totalPages; i++) {
+        const pageBtn = document.createElement("button");
+        if (i === currentPage) {
+          pageBtn.className = "px-3 py-1 rounded font-bold text-xs bg-slate-800 text-white shadow-sm";
+        } else {
+          pageBtn.className = "px-3 py-1 rounded border font-semibold text-xs bg-white hover:bg-slate-100 text-slate-700";
+        }
+        pageBtn.innerText = i;
+        pageBtn.onclick = () => onPageChange(i);
+        container.appendChild(pageBtn);
+      }
+
+      const nextBtn = document.createElement("button");
+      nextBtn.className = `px-2.5 py-1 rounded border font-semibold text-xs transition ${currentPage === totalPages ? 'opacity-40 cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-white hover:bg-slate-100 text-slate-700'}`;
+      nextBtn.innerText = "Next ▶";
+      nextBtn.disabled = currentPage === totalPages;
+      nextBtn.onclick = () => onPageChange(currentPage + 1);
+      container.appendChild(nextBtn);
     }
 
     async function overrideDecision(id) {
-      const res = await fetch("/api/admin/override", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": currentToken 
-        },
-        body: JSON.stringify({ id: id, overrideDecision: "MANUALLY APPROVED" })
-      });
+      try {
+        const apiUrl = window.location.port === "" ? "/api/admin/override" : "http://localhost:18080/api/admin/override";
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": currentToken 
+          },
+          body: JSON.stringify({ id: id, overrideDecision: "MANUALLY APPROVED" })
+        });
 
-      if (res.ok) fetchReports();
-      else alert("Admin Override Forbidden!");
+        if (res.ok) fetchReports();
+        else alert("Admin Override Access Denied!");
+      } catch (err) {
+        console.error("Error overriding decision:", err);
+      }
     }
   </script>
 </body>

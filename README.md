@@ -42,6 +42,10 @@ asynchronous I/O and HTTP networking.
     **cmake --build .**
 * Go to main dir : **cd ..**
 * Run Application : **./build/DigiLoanServer**
+* If unable to launch due to previous version - Kill all running DigiLoanServer instances directly
+* Bash
+* fuser -k 18080/tcp
+* pkill -f DigiLoanServer
 
     ###### Once launched, the console will confirm server startup:
     ###### =======================================================

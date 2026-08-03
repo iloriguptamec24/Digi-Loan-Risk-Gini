@@ -2,11 +2,25 @@
 #include "database.hpp"
 #include "cibil_score.hpp"
 #include <iostream>
+#include <sstream>
+
+/**
+ * @brief Helper utility to attach cross-origin resource sharing (CORS) headers to responses.
+ */
+inline void applyCorsHeaders(crow::response& res) {
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.add_header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
+    res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+}
 
 int main() {
     // ------------------------------------------------------------------
+    // 0. CROW LOGGER CONFIGURATION
+    // ------------------------------------------------------------------
+    crow::logger::setLogLevel(crow::LogLevel::Debug);
+
+    // ------------------------------------------------------------------
     // 1. DATABASE INITIALIZATION
-    // Ensure data directory exists and SQLite schema is created on startup.
     // ------------------------------------------------------------------
     Database::initDatabase();
 
@@ -14,150 +28,222 @@ int main() {
     crow::SimpleApp app;
 
     // ==================================================================
+    // GLOBAL OPTIONS ROUTE (CORS Preflight Requests)
+    // ==================================================================
+    CROW_ROUTE(app, "/<path>")
+    .methods(crow::HTTPMethod::Options)
+    ([](const crow::request&, crow::response& res, std::string) {
+        applyCorsHeaders(res);
+        res.code = 200;
+        res.end();
+    });
+
+    // ==================================================================
     // ROUTE 1: GET /
-    // Serves the static web dashboard (public/index.html)
+    // Serves static web dashboard (public/index.html)
     // ==================================================================
     CROW_ROUTE(app, "/")
     ([](const crow::request&, crow::response& res) {
-        // Serves index.html copied to public/ folder during the CMake build step
+        CROW_LOG_INFO << "Serving static frontend file: public/index.html";
         res.set_static_file_info("public/index.html");
         res.end();
     });
 
     // ==================================================================
     // ROUTE 2: POST /api/applicant
-    // Receives applicant details, queries CIBIL API, runs OOP Risk Engine,
-    // and saves the underwriting decision into SQLite.
+    // Accepts PAN details, fetches CIBIL score, and runs Risk Engine
     // ==================================================================
-    CROW_ROUTE(app, "/api/applicant").methods("POST"_method)
-    ([](const crow::request& req) {
-        // Parse incoming HTTP JSON request payload
+    CROW_ROUTE(app, "/api/applicant").methods(crow::HTTPMethod::Post)
+    ([](const crow::request& req, crow::response& res) {
+        applyCorsHeaders(res);
+        
         auto body = crow::json::load(req.body);
-        if (!body) return crow::response(400, "Invalid JSON payload");
+        if (!body) {
+            CROW_LOG_ERROR << "Failed to parse JSON body in /api/applicant";
+            res.code = 400;
+            res.write("Invalid JSON payload");
+            res.end();
+            return;
+        }
 
-        // Extract required common financial fields
+        // Validate mandatory parameters
+        if (!body.has("name") || !body.has("loanType") || !body.has("pan") ||
+            !body.has("income") || !body.has("monthlyDebts") || !body.has("loanAmount")) {
+            CROW_LOG_ERROR << "Missing required parameters in request payload";
+            res.code = 400;
+            res.write("Missing required applicant parameters (PAN required)");
+            res.end();
+            return;
+        }
+
+        // Extract parameters safely
         std::string name = std::string(body["name"].s());
         std::string loanType = std::string(body["loanType"].s());
+        std::string pan = std::string(body["pan"].s());
+        std::string mobile = body.has("mobile") ? std::string(body["mobile"].s()) : "";
+        std::string dob = body.has("dob") ? std::string(body["dob"].s()) : "";
+
         double income = body["income"].d();
         double monthlyDebts = body["monthlyDebts"].d();
         double loanAmount = body["loanAmount"].d();
 
-        int cibilScore = 800; // Default fallback score
-
         // --------------------------------------------------------------
-        // CIBIL SCORE EVALUATION
-        // Case A: Guest mode submission with identity parameters (PAN, Mobile, DOB)
-        //         -> Fetch real-time score via external CIBIL REST API call.
-        // Case B: Underwriter/Admin mode submission
-        //         -> Use direct CIBIL score input from the request.
+        // CIBIL SCORE LOOKUP VIA PAN
         // --------------------------------------------------------------
-       if (body.has("pan") && body.has("mobile") && body.has("dob")) {
-            std::string pan = std::string(body["pan"].s());
-            std::string mobile = std::string(body["mobile"].s());
-            std::string dob = std::string(body["dob"].s());
-
-            // Outbound libcurl HTTP POST call to cibil-mock-server
-            cibilScore = CIBILService::fetchLiveCIBILScore(pan, name, mobile, dob);
-            if(cibilScore == NULL) cibilScore = 777;
-            if(cibilScore == 0) cibilScore = 778;
-       } else if (body.has("cibilScore")) {
-            cibilScore = body["cibilScore"].i();
+        CROW_LOG_INFO << "Fetching live CIBIL score for Applicant: " << name << " | PAN: " << pan;
+        
+        int cibilScore = CIBILService::fetchLiveCIBILScore(pan, name, mobile, dob);
+        
+        // Fallback handling if score query fails
+        if (cibilScore <= 0) {
+            CROW_LOG_WARNING << "CIBIL score fetch returned invalid value (" << cibilScore << "). Applying default score.";
+            cibilScore = 777;
         }
-        std::cerr << cibilScore <<" 'applicant_name' not found in payload!" << std::endl;
-        CROW_LOG_ERROR << "cibilScore ...";
+
+        CROW_LOG_INFO << "Evaluated CIBIL Score: " << cibilScore << " for PAN: " << pan;
+
         // --------------------------------------------------------------
         // OOP RISK EVALUATION ENGINE
-        // 1. Use LoanFactory (Creational Design Pattern) to instantiate loan subclass.
-        // 2. Perform polymorphic evaluation (evaluate()) to derive risk score.
         // --------------------------------------------------------------
         auto loanObj = LoanFactory::createLoan(loanType, name, income, cibilScore, monthlyDebts, loanAmount);
         PersonalLoanResult result = loanObj->evaluate();
 
-        CROW_LOG_ERROR << "cibilScore ...";
+        CROW_LOG_INFO << "Risk assessment decision for " << name << ": " << result.decision;
 
-        // Save application record & decision result into SQLite database
-        Database::saveApplicant(name, loanType, income, cibilScore, monthlyDebts, loanAmount, result);
+        // Persist record in SQLite database
+        Database::saveApplicant(pan, name, loanType, income, cibilScore, monthlyDebts, loanAmount, result);
 
-        // Construct JSON response payload
+        // Construct JSON response
         crow::json::wvalue resJson;
         resJson["status"] = "SUCCESS";
+        resJson["pan"] = pan;
         resJson["fetchedCibilScore"] = cibilScore;
         resJson["decision"] = result.decision;
 
-        return crow::response(201, resJson);
+        res.code = 201;
+        res.set_header("Content-Type", "application/json");
+        res.write(resJson.dump());
+        res.end();
     });
 
     // ==================================================================
     // ROUTE 3: GET /api/reports
-    // Retrieves all evaluated applicant records for staff inspection.
+    // Returns full report history for the Decision Matrix UI
     // ==================================================================
-    CROW_ROUTE(app, "/api/reports").methods("GET"_method)
-    ([](const crow::request& req) {
-        // Query database for all applicant records ordered by ID descending
+    CROW_ROUTE(app, "/api/reports").methods(crow::HTTPMethod::Get)
+    ([](const crow::request&, crow::response& res) {
+        applyCorsHeaders(res);
+
         auto reports = Database::getAllReports();
         crow::json::wvalue::list reportList;
 
-        // Map internal C++ structs to JSON array response
         for (const auto& rep : reports) {
             crow::json::wvalue item;
             item["id"] = rep.id;
+            item["pan"] = rep.pan;
             item["name"] = rep.name;
             item["loanType"] = rep.loanType;
             item["income"] = rep.income;
             item["cibilScore"] = rep.cibilScore;
             item["monthlyDebts"] = rep.monthlyDebts;
             item["requestedLoan"] = rep.requestedLoan;
+            item["ltiRatio"] = rep.ltiRatio;
+            item["foirRatio"] = rep.foirRatio;
             item["bankRiskFactor"] = rep.bankRiskFactor;
             item["score"] = rep.score;
             item["decision"] = rep.decision;
 
-            // Map rejection reasons list
             crow::json::wvalue::list reasonsList;
-            for (size_t i = 0; i < rep.rejectionReasons.size(); ++i) {
-                reasonsList.push_back(rep.rejectionReasons[i]);
+            for (const auto& reason : rep.rejectionReasons) {
+                reasonsList.push_back(reason);
             }
             item["rejectionReasons"] = std::move(reasonsList);
             reportList.push_back(std::move(item));
         }
 
         crow::json::wvalue resJson;
-        resJson = std::move(reportList);
-        return crow::response(200, resJson);
+        resJson["status"] = "success";
+        resJson["data"] = std::move(reportList);
+
+        res.code = 200;
+        res.set_header("Content-Type", "application/json");
+        res.write(resJson.dump());
+        res.end();
     });
 
     // ==================================================================
     // ROUTE 4: POST /api/admin/override
-    // Admin privilege route to manually override system decision.
+    // Allows decision overriding for administrative actions
     // ==================================================================
-    CROW_ROUTE(app, "/api/admin/override").methods("POST"_method)
-    ([](const crow::request& req) {
+    CROW_ROUTE(app, "/api/admin/override").methods(crow::HTTPMethod::Post)
+    ([](const crow::request& req, crow::response& res) {
+        applyCorsHeaders(res);
+
         auto body = crow::json::load(req.body);
         if (!body || !body.has("id") || !body.has("overrideDecision")) {
-            return crow::response(400, "Invalid payload");
+            res.code = 400;
+            res.write("Invalid payload");
+            res.end();
+            return;
         }
 
         int id = body["id"].i();
         std::string newDecision = std::string(body["overrideDecision"].s());
 
-        // Update database record status
         bool success = Database::overrideDecision(id, newDecision);
         if (success) {
             crow::json::wvalue resJson;
             resJson["status"] = "OVERRIDDEN";
-            return crow::response(200, resJson);
+            res.code = 200;
+            res.set_header("Content-Type", "application/json");
+            res.write(resJson.dump());
         } else {
-            return crow::response(500, "Database update failed");
+            res.code = 500;
+            res.write("Database update failed");
         }
+        res.end();
+    });
+
+    // ==================================================================
+    // ROUTE 5: DELETE /api/admin/delete
+    // Deletes an applicant record from SQLite
+    // ==================================================================
+    CROW_ROUTE(app, "/api/admin/delete").methods(crow::HTTPMethod::Delete)
+    ([](const crow::request& req, crow::response& res) {
+        applyCorsHeaders(res);
+
+        auto body = crow::json::load(req.body);
+        if (!body || !body.has("id")) {
+            res.code = 400;
+            res.write("Missing application ID in delete payload");
+            res.end();
+            return;
+        }
+
+        int id = body["id"].i();
+        bool success = Database::deleteApplicant(id);
+
+        if (success) {
+            crow::json::wvalue resJson;
+            resJson["status"] = "DELETED";
+            resJson["id"] = id;
+            res.code = 200;
+            res.set_header("Content-Type", "application/json");
+            res.write(resJson.dump());
+        } else {
+            res.code = 500;
+            res.write("Failed to delete record from database");
+        }
+        res.end();
     });
 
     // ------------------------------------------------------------------
     // START CROW WEB SERVER
-    // Listens on HTTP Port 18080 with multi-threaded async execution.
     // ------------------------------------------------------------------
     std::cout << "=======================================================\n";
     std::cout << "🚀 DIGI-LOAN-RISK-GINI RUNNING AT http://localhost:18080\n";
     std::cout << "=======================================================\n";
 
-    app.port(18080).multithreaded().run();
+    app.port(18080).bindaddr("0.0.0.0").multithreaded().run();
     return 0;
 }
